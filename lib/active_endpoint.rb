@@ -7,3 +7,5 @@ module ActiveEndpoint
   define_setting :settings, "default"
 end
 
+require "active_endpoint/rails/railtie" if defined?(Rails)
+
