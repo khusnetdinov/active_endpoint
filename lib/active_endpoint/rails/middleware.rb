@@ -1,5 +1,3 @@
-require "active_endpoint/probe"
-
 module ActiveEndpoint
   module Rails
     class Middleware
