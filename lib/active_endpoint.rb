@@ -8,4 +8,3 @@ module ActiveEndpoint
 end
 
 require "active_endpoint/rails/railtie" if defined?(Rails)
-

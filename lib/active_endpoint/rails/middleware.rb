@@ -8,7 +8,11 @@ module ActiveEndpoint
       end
 
       def call(env)
-        @app.call(env)
+        dup._call(env, ActiveEndpoint::Probe.new)
+      end
+
+      def _call(env, probe)
+        probe.track(env) { @app.call(env) }
       end
     end
   end
