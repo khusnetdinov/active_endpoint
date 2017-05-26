@@ -1,4 +1,4 @@
-require "active_endpoint/probe"
+require 'active_endpoint/probe'
 
 module ActiveEndpoint
   module Rails
@@ -8,7 +8,13 @@ module ActiveEndpoint
       end
 
       def call(env)
-        @app.call(env)
+        dup._call(env)
+      end
+
+      def _call(env)
+        status, headers, response = @app.call(env)
+
+        [status, headers, response]
       end
     end
   end
