@@ -1,13 +1,14 @@
 require "active_endpoint/request"
 require "active_endpoint/response"
 require "active_endpoint/routes/matcher"
+require "active_endpoint/storage"
 
 module ActiveEndpoint
   class Probe
-    def initialize(matcher = ActiveEndpoint::Routes::Matcher.new)
+    def initialize
       @created_at = Time.now
-      @finished_at = nil
-      @matcher = matcher
+      @matcher = ActiveEndpoint::Routes::Matcher.new
+      @storage = ActiveEndpoint::Storage.new
     end
 
     def track(env, &block)
@@ -27,18 +28,23 @@ module ActiveEndpoint
     private
 
     def track_begin(request)
-      # TODO: Save probe request
+      @request = request.probe
     end
 
     def track_end(response, finished_at = Time.now)
-      response = ActiveEndpoint::Response.new(response)
+      @response = ActiveEndpoint::Response.new(response).probe
       @finished_at = finished_at
-      # TODO: Save probe response
-      # TODO: Store probe
+
+      @storage.account({
+        created_at: @created_at,
+        finished_at: @finished_at,
+        request: @request,
+        response: @response,
+      })
     end
 
     def unaccounted(request)
-      # TODO: Store unaccounted probe
+      @storage.register(request.probe)
     end
   end
 end
