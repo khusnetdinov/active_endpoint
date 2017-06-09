@@ -1,8 +1,3 @@
-require "active_endpoint/request"
-require "active_endpoint/response"
-require "active_endpoint/routes/matcher"
-require "active_endpoint/storage"
-
 module ActiveEndpoint
   class Probe
     def initialize

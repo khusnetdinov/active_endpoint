@@ -3,17 +3,17 @@ module ActiveEndpoint
     class Blacklist
       include Configurable
 
-			def initialize
-				@list = {}
-			end
+      def initialize
+        @list = {}
+      end
 
-			def include?(request)
-				false
-			end
+      def include?(request)
+        false
+      end
 
-			def add()
-			end
-		end
-	end
+      def add()
+      end
+    end
+  end
 end
 
