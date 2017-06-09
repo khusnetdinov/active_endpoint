@@ -15,6 +15,7 @@ module ActiveEndpoint
         ip: ip,
         media_type: media_type,
         media_type_params: media_type_params,
+        method: method,
         path: path,
         path_info: path_info,
         port: port,
@@ -26,6 +27,10 @@ module ActiveEndpoint
         url: url,
         xhr: xhr?
       }
+    end
+
+    def method
+      request_method.downcase.to_sym
     end
 
     private
