@@ -1,4 +1,7 @@
+require "rack"
+
 require "active_endpoint/concerns/configurable"
+require "active_endpoint/concerns/rails_routable"
 require "active_endpoint/routes/blacklist"
 require "active_endpoint/routes/constraints"
 require "active_endpoint/routes/matcher"
