@@ -1,5 +1,3 @@
-require "active_endpoint/rails/middleware"
-
 module ActiveEndpoint
   module Rails
     class Railtie < ::Rails::Railtie

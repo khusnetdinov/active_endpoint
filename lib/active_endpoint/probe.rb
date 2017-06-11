@@ -1,8 +1,3 @@
-require "active_endpoint/request"
-require "active_endpoint/response"
-require "active_endpoint/routes/matcher"
-require "active_endpoint/storage"
-
 module ActiveEndpoint
   class Probe
     def initialize
@@ -20,7 +15,7 @@ module ActiveEndpoint
         track_end(response)
         [status, headers, response]
       else
-        account(request) unless @matcher.blacklisted?(request)
+        register(request) if @matcher.unregistred?(request)
         yield block
       end
     end
@@ -43,7 +38,7 @@ module ActiveEndpoint
       })
     end
 
-    def unaccounted(request)
+    def register(request)
       @storage.register(request.probe)
     end
   end

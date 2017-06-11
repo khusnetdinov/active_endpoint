@@ -1,6 +1,6 @@
 module ActiveEndpoint
-  module Routes
-    class Whitelist
+  class Tags
+    def initialize
     end
   end
 end
