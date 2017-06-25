@@ -2,7 +2,7 @@ module ActiveEndpoint
   module Routes
     class Blacklist
       include Configurable
-      include RailsRoutable
+      include Optionable
 
       def initialize
         @endpoints = []
@@ -12,51 +12,33 @@ module ActiveEndpoint
       end
 
       def include?(request)
-        ignored? [
-          ignored_endpoint?(request),
-          ignored_resource?(request),
-          ignored_action?(request),
-          ignored_scope?(request)
+        any_presented? [
+          present_endpoint?(request),
+          present_resource?(request),
+          present_action?(request),
+          present_scope?(request)
         ]
+      end
+
+      def exclude?(request)
+        !include?(request)
       end
 
       def add(*options)
         options = parse(options)
 
-        ignore_endpoint(options) if endpoint(options).present?
-        ignore_resources(options) if resources(options).present?
-        ignore_scopes(options) if scope(options).present?
+        add_endpoint(options) if endpoint(options).present?
+        add_resources(options) if resources(options).present?
+        add_scopes(options) if scope(options).present?
       end
 
       private
 
-      def parse(options)
-        options.inject({}) do |hash, option|
-          hash[options.first] = options.last
-        end
-      end
-
-      def endpoint(options)
-        options[:endpoint]
-      end
-
-      def actions(options)
-        options[:actions]
-      end
-
-      def resources(options)
-        options[:resources]
-      end
-
-      def scope(options)
-        options[:scope]
-      end
-
-      def ignore_endpoint(options)
+      def add_endpoint(options)
         @endpoints << endpoint(options)
       end
 
-      def ignore_resources(options)
+      def add_resources(options)
         resources = resources(options)
         actions = actions(options)
         scope = scope(options)
@@ -82,38 +64,39 @@ module ActiveEndpoint
         end
       end
 
-      def ignore_scopes(options)
+      def add_scopes(options)
         @scopes << scope(options)
       end
 
-      def ignored?(blockers)
-        blockers.reduce(false) { |state, blocker| state || blocker }
+      def present_endpoint?(request)
+        @endpoints.include?(request.endpoint)
       end
 
-      def ignored_endpoint?(request)
-        @endpoints.include?(request.probe[:endpoint])
-      end
-
-      def ignored_resource?(request)
+      def present_resource?(request)
         reduce_state(@resources, request)
       end
 
-      def ignored_action?(request)
-        @actions.include?(request.probe[:endpoint])
+      def present_action?(request)
+        @actions.include?(request.endpoint)
       end
 
-      def ignored_scope?(request)
+      def present_scope?(request)
         reduce_state(@scopes, request)
       end
 
-      def apply(scope, collection)
-        scope.present? ? collection.map { |subject| "#{scope}/#{subject}" } : collection
+      def any_presented?(chain)
+        chain.reduce(false) { |state, responder_state| state || responder_state }
       end
 
       def reduce_state(collection, request)
         collection.reduce(false) do |state, subject|
-          state || request.probe[:endpoint].start_with?(subject)
+          state || request.endpoint.start_with?(subject)
         end
+      end
+
+      def apply(scope, collection)
+        return collection unless scope.present?
+        collection.map { |subject| "#{scope}/#{subject}" }
       end
     end
   end

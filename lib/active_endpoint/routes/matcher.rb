@@ -5,7 +5,7 @@ module ActiveEndpoint
 
       def initialize
         @blacklist = ActiveEndpoint.blacklist
-				@favicon = ActiveEndpoint.favicon
+        @favicon = ActiveEndpoint.favicon
       end
 
       def whitelisted?(request)
