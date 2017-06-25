@@ -89,6 +89,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_endpoint!
+  activesupport (~> 4.0.0)
   bundler (~> 1.14)
   rack (~> 1.0)
   rails (~> 4.0.0)
