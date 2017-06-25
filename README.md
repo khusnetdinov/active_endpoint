@@ -27,17 +27,17 @@ By default ActiveEndpoint set Rails application routes as `whitelist` routes, if
 ```ruby
 ActiveEndpoint.configure do |endpoint|
   endpoint.blacklist.configure  do |blacklist|
-    blacklist.add(endpoint: "welcome#index")
     #=> ignore endpoint "welcome#index"
-    
-    blacklist.add(resources: ["web/users"])
+    blacklist.add(endpoint: "welcome#index")
+   
     #=> ignore "web/users" controller actions
+    blacklist.add(resources: ["web/users"])
     
-    blacklist.add(scope: "web", resources: "users", actions: ["show"])
     #=> ignore "web/users#show" action with scoped controller
+    blacklist.add(scope: "web", resources: "users", actions: ["show"])
     
-    blacklist.add(scope: "admin")
     #=> ignore "admin" scope controllers
+    blacklist.add(scope: "admin")
   end
 end
 ```
@@ -57,6 +57,36 @@ end
 #### Ignore namespace or scope
 
 `blacklist.add(scope: "admin")` - Ignore all controller and actions for `admin` namespace or scope.
+
+### Favicon
+
+`endpoint.favicon = custom_name.ico` - Use this if you have not `favicon.ico` name. Requires for ignoring request. Example:
+
+```ruby
+ActiveEndpoint.configure do |endpoint|
+  endpoint.favicon = '/custom.ico'
+end
+```
+
+### Constraints Time and Request limit for endpoint
+
+By default ActiveEndpoint takes default settings for time and amount requests for limitation probes for given endpoint. Also you can redifine them on constraining endpoint, see example below:
+ 
+ ```ruby
+ActiveEndpoint.configure do |endpoint|
+  # Redefines default settings, 1 probe per 10 minutes for endpoint request
+  constraint_limit = 1
+  constraint_period = 10.minutes
+  
+  endpoint.constraints.configure  do |constraints|
+    #=> constraint endpoint "welcome#index" with default period and limit
+    constraints.add(endpoint: "welcome#index")
+    
+    #=> constraints "web/users" controller actions with custom limit and period
+    constraints.add(resources: ["web/users"], period: 5.minutes, limit: 100)
+  end
+end
+``` 
 
 ## License
 
