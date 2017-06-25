@@ -40,11 +40,11 @@ module ActiveEndpoint
       request_method.downcase.to_sym
     end
 
+    private
+
     def endpoint
       rails_endpoint_name(rails_endpoint(self))
     end
-
-    private
 
     def http_accept_encoding
       get_header('HTTP_ACCEPT_ENCODING')
