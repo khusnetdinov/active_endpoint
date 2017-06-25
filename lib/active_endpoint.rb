@@ -15,6 +15,10 @@ require "active_endpoint/version"
 module ActiveEndpoint
   extend Configurable
 
+  define_setting :blacklist, ActiveEndpoint::Routes::Blacklist.new
+
+  define_setting :favicon, '/favicon.ico'
+
   # define_setting :constraint_limit, 10
   # define_setting :constraint_period, 1.second
 
@@ -24,8 +28,6 @@ module ActiveEndpoint
 
   # define_setting :tags, ActiveEndpoint::Tags.new
   # define_setting :constraints, ActiveEndpoint::Routes::Constraints.new
-
-  define_setting :blacklist, ActiveEndpoint::Routes::Blacklist.new
 end
 
 if defined?(Rails)
