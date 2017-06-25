@@ -18,6 +18,8 @@ module ActiveEndpoint
         register(request) if @matcher.unregistred?(request)
         yield block
       end
+    rescue
+      yield block
     end
 
     private
