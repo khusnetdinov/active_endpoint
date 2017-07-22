@@ -5,6 +5,8 @@ module ActiveEndpoint
 
       def initialize
         @blacklist = ActiveEndpoint.blacklist
+        @cache_store = ActiveEndpoint::Routes::Cache::Store.new
+        @constraints = ActiveEndpoint.constraints
         @favicon = ActiveEndpoint.favicon
       end
 
@@ -12,12 +14,8 @@ module ActiveEndpoint
         trackable?(request) && rails_action?(request)
       end
 
-      def blacklisted?(request)
-        @blacklist.include?(request)
-      end
-
-      def allowed?(request)
-        true
+      def blacklisted?(probe)
+        @blacklist.include?(probe)
       end
 
       def unregistred?(request)
@@ -28,6 +26,10 @@ module ActiveEndpoint
         request.path.start_with?('/assets')
       end
 
+      def allow_account?(request)
+        @cache_store.allow?(@constraints.rule(request))
+      end
+
       private
 
       def favicon?(request)
@@ -35,7 +37,7 @@ module ActiveEndpoint
       end
 
       def trackable?(request)
-        !(assets?(request) || favicon?(request) || blacklisted?(request))
+        !(assets?(request) || favicon?(request) || blacklisted?(request.probe))
       end
     end
   end

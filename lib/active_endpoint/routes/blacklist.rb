@@ -69,7 +69,7 @@ module ActiveEndpoint
       end
 
       def present_endpoint?(request)
-        @endpoints.include?(request.endpoint)
+        @endpoints.include?(request[:endpoint])
       end
 
       def present_resource?(request)
@@ -77,7 +77,7 @@ module ActiveEndpoint
       end
 
       def present_action?(request)
-        @actions.include?(request.endpoint)
+        @actions.include?(request[:endpoint])
       end
 
       def present_scope?(request)
@@ -90,7 +90,7 @@ module ActiveEndpoint
 
       def reduce_state(collection, request)
         collection.reduce(false) do |state, subject|
-          state || request.endpoint.start_with?(subject)
+          state || request[:endpoint].start_with?(subject)
         end
       end
 

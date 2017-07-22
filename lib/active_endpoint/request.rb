@@ -1,5 +1,3 @@
-require "rack/request"
-
 module ActiveEndpoint
   class Request < Rack::Request
     include RailsRoutable

@@ -1,11 +1,11 @@
 module ActiveEndpoint
   class Storage
-    def account(request)
-      puts "Accounted: #{request[:request]}"
+    def account(probe)
+      puts "Accounted: #{probe}"
     end
 
-    def register(request)
-      puts "Registered: #{request}"
+    def register(probe)
+      puts "Registered: #{probe}"
     end
   end
 end
