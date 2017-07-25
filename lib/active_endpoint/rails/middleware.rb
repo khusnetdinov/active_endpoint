@@ -6,11 +6,11 @@ module ActiveEndpoint
       end
 
       def call(env)
-        dup._call(env, ActiveEndpoint::Probe.new)
+        dup._call(env, ActiveEndpoint::Proxy.new)
       end
 
-      def _call(env, probe)
-        probe.track(env) { @app.call(env) }
+      def _call(env, proxy)
+        proxy.track(env) { @app.call(env) }
       end
     end
   end

@@ -3,8 +3,6 @@ module RailsRoutable
 
   def rails_action?(request)
     rails_action(request).present?
-  rescue ActionController::RoutingError
-    false
   end
 
   def rails_route_pattern(request)
@@ -14,11 +12,15 @@ module RailsRoutable
   end
 
   def rails_request_params(request)
-    rails_action(request).reject { |key, _value| ACTION_KEYS.include?(key) }
+    rails_action(request).reject do |key, _value|
+      ACTION_KEYS.include?(key)
+    end
   end
 
   def rails_endpoint(request)
-    rails_action(request).select { |key, _value| ACTION_KEYS.include?(key) }
+    rails_action(request).select do |key, _value|
+      ACTION_KEYS.include?(key)
+    end
   end
 
   def rails_endpoint_name(action)
@@ -27,6 +29,8 @@ module RailsRoutable
 
   def rails_action(request)
     rails_routes.recognize_path(request.path, method: request.method)
+  rescue ActionController::RoutingError
+    nil
   end
 
   def rails_routes

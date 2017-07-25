@@ -4,6 +4,8 @@ module ActiveEndpoint
       include Configurable
       include Optionable
 
+      class Error < ::StandardError; end
+
       def initialize
         @endpoints = {}
         @resources = {}
@@ -27,12 +29,46 @@ module ActiveEndpoint
       def add(*options)
         options = parse(options)
 
+        if limit(options).nil? && period(options).nil?
+          message = "Constraints can't have empty limit and period!\n"
+          raise ActiveEndpoint::Routes::Constraints::Error.new(message)
+        end
+
         add_endpoint(options) if endpoint(options).present?
         add_resources(options) if resources(options).present?
         add_scopes(options) if scope(options).present?
       end
 
+      # rule: start
+      def rule(request)
+        {
+          key: "#{prefix(request)}:#{request[:endpoint]}",
+          limit: rule_constraints(request)[:limit],
+          period: rule_constraints(request)[:period]
+        }
+      end
+
       private
+
+      def prefix(request)
+        return :endpoints if present_endpoint?(request)
+        return :resources if present_resource?(request)
+        return :actions if present_action?(request)
+        return :scopes if present_scope?(request)
+        :defaults
+      end
+
+      def rule_constraints(request)
+        prefix = prefix(request)
+
+        if prefix == :defaults
+          default_constraints
+        else
+          constraints = instance_variable_get("@#{prefix}")[request[:endpoint]]
+          constraints.present? ? constraints : default_constraints
+        end
+      end
+      # rule: end
 
       def add_endpoint(options)
         @endpoints[endpoint(options)] = constraints(options)
@@ -69,7 +105,7 @@ module ActiveEndpoint
       end
 
       def present_endpoint?(request)
-        @endpoints.keys.include?(request.endpoint)
+        @endpoints.keys.include?(request[:endpoint])
       end
 
       def present_resource?(request)
@@ -77,7 +113,7 @@ module ActiveEndpoint
       end
 
       def present_action?(request)
-        @actions.keys.include?(request.endpoint)
+        @actions.keys.include?(request[:endpoint])
       end
 
       def present_scope?(request)
@@ -90,7 +126,7 @@ module ActiveEndpoint
 
       def reduce_state(collection, request)
         collection.reduce(false) do |state, subject|
-          state || request.endpoint.start_with?(subject)
+          state || request[:endpoint].start_with?(subject)
         end
       end
 
@@ -107,6 +143,13 @@ module ActiveEndpoint
         {
           limit: limit(options) || ActiveEndpoint.constraint_limit,
           period: period(options) || ActiveEndpoint.constraint_period
+        }
+      end
+
+      def default_constraints
+        {
+            limit: ActiveEndpoint.constraint_limit,
+            period: ActiveEndpoint.constraint_period
         }
       end
     end

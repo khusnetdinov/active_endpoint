@@ -1,5 +1,5 @@
 module ActiveEndpoint
-  class Probe
+  class Proxy
     def initialize
       @created_at = Time.now
       @matcher = ActiveEndpoint::Routes::Matcher.new
@@ -9,7 +9,7 @@ module ActiveEndpoint
     def track(env, &block)
       request = ActiveEndpoint::Request.new(env)
 
-      if @matcher.whitelisted?(request) && @matcher.allowed?(request)
+      if @matcher.whitelisted?(request)
         track_begin(request)
         status, headers, response = yield block
         track_end(response)
@@ -32,12 +32,14 @@ module ActiveEndpoint
       @response = ActiveEndpoint::Response.new(response).probe
       @finished_at = finished_at
 
-      @storage.account({
-        created_at: @created_at,
-        finished_at: @finished_at,
-        request: @request,
-        response: @response,
-      })
+      if @matcher.allow_account?(@request)
+        @storage.account({
+          created_at: @created_at,
+          finished_at: @finished_at,
+          request: @request,
+          response: @response
+       })
+      end
     end
 
     def register(request)
