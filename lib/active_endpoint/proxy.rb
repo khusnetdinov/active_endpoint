@@ -33,17 +33,17 @@ module ActiveEndpoint
       @finished_at = finished_at
 
       if @matcher.allow_account?(@request)
-        @storage.account({
+        ActiveSupport::Notifications.instrument('active_endpoint.tracked_probe', probe: {
           created_at: @created_at,
           finished_at: @finished_at,
           request: @request,
           response: @response
-       })
+        })
       end
     end
 
     def register(request)
-      @storage.register(request.probe)
+      ActiveSupport::Notifications.instrument('active_endpoint.unregistred_probe', probe: request.probe)
     end
   end
 end
