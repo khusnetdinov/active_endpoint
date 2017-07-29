@@ -30,6 +30,10 @@ module ActiveEndpoint
         @cache_store.allow?(@constraints.rule(request))
       end
 
+      def allow_register?(request)
+        @cache_store.unregistred?(request.probe)
+      end
+
       private
 
       def favicon?(request)

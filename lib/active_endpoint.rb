@@ -1,3 +1,4 @@
+require 'base64'
 require 'rack'
 require 'rack/request'
 require 'active_support/time'
@@ -35,12 +36,17 @@ module ActiveEndpoint
 
   # define_setting :storage_limit, 100
   # define_setting :storage_period, 1.week
-  # define_setting :storage, :postgres
 
   # define_setting :tags, ActiveEndpoint::Tags.new
 end
 
-if defined?(Rails)
+if defined?(::Rails)
   require 'active_endpoint/rails/middleware'
   require 'active_endpoint/rails/railtie'
+
+  require 'models/probe'
+  require 'models/unregistred_probe'
+
+  require 'rails/generators'
+  require 'rails/generators/migration'
 end

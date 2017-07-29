@@ -25,7 +25,7 @@ module ActiveEndpoint
         pattern: pattern,
         port: port,
         protocol: protocol,
-        qury_string: query_string,
+        query_string: query_string,
         request_method: request_method,
         server_name: server_name,
         ssl: ssl?,

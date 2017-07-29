@@ -9,12 +9,16 @@ module ActiveEndpoint
           end
 
           def read(unprefixed_key)
-            @store.get("#{@prefix}:#{unprefixed_key}").to_i
+            @store.get("#{@prefix}:#{unprefixed_key}")
           rescue Redis::BaseError
           end
 
-          def write(unprefixed_key, expires_in, value)
-            @store.setex("#{@prefix}:#{unprefixed_key}", expires_in, value)
+          def write(unprefixed_key, value, expires_in = nil)
+            if expires_in.present?
+              @store.setex("#{@prefix}:#{unprefixed_key}", expires_in, value)
+            else
+              @store.set("#{@prefix}:#{unprefixed_key}", value)
+            end
           rescue Redis::BaseError
           end
 

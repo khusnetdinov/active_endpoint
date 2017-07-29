@@ -11,18 +11,29 @@ module ActiveEndpoint
         end
 
         def allow?(rule)
-          limit = read(rule[:key])
+          limit = read(rule[:key]).to_i
           period = expires_in(rule[:key])
 
           if limit.present? && period != 0
             return false if limit == 0
 
-            write(rule[:key], period, limit - 1)
+            write(rule[:key], limit - 1, period)
           else
-            write(rule[:key], rule[:period], rule[:limit])
+            write(rule[:key], rule[:limit], rule[:period])
           end
 
           true
+        end
+
+        def unregistred?(probe)
+          limit = read(probe[:path])
+
+          if limit.present?
+            false
+          else
+            write(probe[:path], :unregistred)
+            true
+          end
         end
       end
     end
