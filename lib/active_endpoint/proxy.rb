@@ -3,7 +3,6 @@ module ActiveEndpoint
     def initialize
       @created_at = Time.now
       @matcher = ActiveEndpoint::Routes::Matcher.new
-      @storage = ActiveEndpoint::Storage.new
     end
 
     def track(env, &block)
@@ -16,9 +15,12 @@ module ActiveEndpoint
         [status, headers, response]
       else
         register(request) if @matcher.unregistred?(request)
+
         yield block
       end
-    rescue
+    rescue => error
+      puts "ActiveEndpoint::Logger[Proxy::Error]: #{error}"
+
       yield block
     end
 
@@ -32,18 +34,15 @@ module ActiveEndpoint
       @response = ActiveEndpoint::Response.new(response).probe
       @finished_at = finished_at
 
-      if @matcher.allow_account?(@request)
-        ActiveSupport::Notifications.instrument('active_endpoint.tracked_probe', probe: {
-          created_at: @created_at,
-          finished_at: @finished_at,
-          request: @request,
-          response: @response
-        })
-      end
+      ActiveSupport::Notifications.instrument('active_endpoint.tracked_probe', probe: {
+        created_at: @created_at, finished_at: @finished_at, request: @request, response: @response
+      }) if @matcher.allow_account?(@request)
     end
 
     def register(request)
-      ActiveSupport::Notifications.instrument('active_endpoint.unregistred_probe', probe: request.probe)
+      ActiveSupport::Notifications.instrument('active_endpoint.unregistred_probe', probe: {
+        created_at: @created_at, finished_at: @finished_at, request: request.probe
+      }) if @matcher.allow_register?(request)
     end
   end
 end

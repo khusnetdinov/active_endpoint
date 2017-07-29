@@ -9,21 +9,28 @@ module RailsRoutable
     rails_routes.router.recognize(request) do |route|
       return route.path.spec.to_s
     end
+  rescue ActionController::RoutingError
+    nil
   end
 
   def rails_request_params(request)
-    rails_action(request).reject do |key, _value|
+    action = rails_action(request)
+    return unless action
+    action.reject do |key, _value|
       ACTION_KEYS.include?(key)
     end
   end
 
   def rails_endpoint(request)
-    rails_action(request).select do |key, _value|
+    action = rails_action(request)
+    return unless action
+    action.select do |key, _value|
       ACTION_KEYS.include?(key)
     end
   end
 
   def rails_endpoint_name(action)
+    return unless action
     "#{action[:controller]}##{action[:action]}"
   end
 
