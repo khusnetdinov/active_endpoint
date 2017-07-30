@@ -1,7 +1,7 @@
 class CreateActiveEndpointProbes < ActiveRecord::Migration<%= migration_version %>
   def change
     create_table :active_enpoint_probes do |t|
-      t.string :type
+      t.string :type, default: '', index: true
 
       t.string :uuid, null: false, index: true
       t.string :endpoint, null: false, index: true
@@ -14,10 +14,10 @@ class CreateActiveEndpointProbes < ActiveRecord::Migration<%= migration_version 
 
       t.boolean :xhr
 
-      t.datetime :started_at, null: false
+      t.datetime :started_at, null: false, index: true
       t.datetime :finished_at
 
-      t.float :duration, nill: false
+      t.float :duration, nill: false, index: true
 
       t.json :params, default: '{}'
 

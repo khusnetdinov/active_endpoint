@@ -30,4 +30,12 @@ module Optionable
   def period(options)
     options[:period]
   end
+
+  def storage(options)
+    options[:storage]
+  end
+
+  def rule(options)
+    options[:rule]
+  end
 end

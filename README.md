@@ -74,16 +74,16 @@ By default ActiveEndpoint set Rails application routes as `whitelist` routes, if
 ```ruby
 ActiveEndpoint.configure do |endpoint|
   endpoint.blacklist.configure  do |blacklist|
-    #=> ignore endpoint "welcome#index"
+    # Ignore endpoint "welcome#index"
     blacklist.add(endpoint: "welcome#index")
    
-    #=> ignore "web/users" controller actions
+    # Ignore "web/users" controller actions
     blacklist.add(resources: ["web/users"])
     
-    #=> ignore "web/users#show" action with scoped controller
+    # Ignore "web/users#show" action with scoped controller
     blacklist.add(scope: "web", resources: "users", actions: ["show"])
     
-    #=> ignore "admin" scope controllers
+    # Ignore "admin" scope controllers
     blacklist.add(scope: "admin")
   end
 end
@@ -117,24 +117,51 @@ end
 
 ### Constraints Time and Request limit for endpoint
 
-By default ActiveEndpoint takes default settings for time and amount requests for limitation probes for given endpoint. Also you can redifine them on constraining endpoint, see example below:
+By default ActiveEndpoint takes default settings for period and amount requests for limitation probes for given endpoint.
+Additional you can specify how much probes you want to keep in database and how much probes you can store for endpoint in data base per period.
+After expiration storage constraints expored probes automaticaly are removed from data base. And you don't need care about it.
+Also you can redifine them on constraining endpoint, see example below:
  
  ```ruby
 ActiveEndpoint.configure do |endpoint|
-  # Redefines default settings, 1 probe per 10 minutes for endpoint request
+  # Defines default settings, 1 probe per 10 minutes for endpoint request
   constraint_limit = 1
   constraint_period = 10.minutes
   
   endpoint.constraints.configure  do |constraints|
-    #=> constraint endpoint "welcome#index" with 1 minute period and defaule limit
-    constraints.add(endpoint: "welcome#index", 1.minute)
-    
-    #=> constraints "web/users" controller actions with custom limit and period
+    # Constraint endpoint "welcome#index" with 1 minute period and default limit
+    # and configure data base constraints for saving 1000 probes per 1 week.
+    constraints.add(endpoint: "welcome#index", 1.minute, storage: {
+      limit: 1000, period: 1.week 
+    })
+   
+    # Constraints "web/users" controller actions with custom limit and period
+    # with defailt storage constraints
     constraints.add(resources: ["web/users"], period: 5.minutes, limit: 100)
   end
 end
 ``` 
 Warning!: For defining constraints you need at least define one of limit or period.
+
+### Storage settings
+
+ActiveEndpoint create two models in you rails application are `Probe` and STI child `UnregistredProbe`.
+For preventing problems with database probes are removes after user defined period. Also you can limit storeage probes in database.
+Here you can see default settings for all constraints. For preventing removes actual probes define period that you want keep.
+See example below:
+
+```ruby
+ActiveEndpoint.configure do |endpoint|
+  # Define default limit for maximum amount storage in database for endpoint.
+  endpoint.storage_limit = 1000
+  
+  # Define default period that models are kept in database. After this period they are destroyd. 
+  endpoint.storage_period
+  
+  # Define amount periods (constraint periods) that endpoints are kept in database.
+  endpoint.storage_keep_periods = 2
+end
+```
 
 ## License
 

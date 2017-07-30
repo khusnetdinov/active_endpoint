@@ -8,6 +8,8 @@ module ActiveEndpoint
     def track(env, &block)
       request = ActiveEndpoint::Request.new(env)
 
+      # puts "ActiveEndpoint::Logger[Constraints!] #{ActiveEndpoint.constraints.inspect}"
+
       if @matcher.whitelisted?(request)
         track_begin(request)
         status, headers, response = yield block
@@ -19,7 +21,7 @@ module ActiveEndpoint
         yield block
       end
     rescue => error
-      puts "ActiveEndpoint::Logger[Proxy::Error]: #{error}"
+      # puts "ActiveEndpoint::Logger[Proxy::Error]: #{error}"
 
       yield block
     end

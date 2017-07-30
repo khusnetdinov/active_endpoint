@@ -34,8 +34,9 @@ module ActiveEndpoint
 
   define_setting :favicon, '/favicon.ico'
 
-  # define_setting :storage_limit, 100
-  # define_setting :storage_period, 1.week
+  define_setting :storage_limit, 1000
+  define_setting :storage_period, 1.day
+  define_setting :storage_keep_periods, 2
 
   # define_setting :tags, ActiveEndpoint::Tags.new
 end

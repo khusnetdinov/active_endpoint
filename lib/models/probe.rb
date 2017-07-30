@@ -11,6 +11,8 @@ module ActiveEndpoint
 
     scope :unregistred, ->() { where(endpoint: :unregistred) }
     scope :registred, ->() { where.not(endpoint: :unregistred) }
+    scope :probe, ->(endpoint) { where(endpoint: endpoint) }
+    scope :taken_before, ->(period) { where('created_at < ?', period) }
 
     private
 

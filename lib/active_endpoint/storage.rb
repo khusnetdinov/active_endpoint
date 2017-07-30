@@ -68,13 +68,17 @@ module ActiveEndpoint
     def self.handle_creation(probe)
       probe.save
     rescue => error
-      puts "ActiveEndpoint::Logger Storage::Error: #{probe} - #{probe.error}"
+      # puts "ActiveEndpoint::Logger Storage::Error: #{probe} - #{probe.error}"
+    end
+
+    def self.clean!(endpoint, period)
+      ActiveEndpoint::Probe.registred.probe(endpoint).taken_before(period).destroy_all
     end
 
     ActiveSupport::Notifications.subscribe('active_endpoint.tracked_probe') do |_name, _start, _ending, transaction_id, payload|
       store_params, logging_params = probe_params(transaction_id, payload[:probe])
 
-      puts "ActiveEndpoint::Logger Storage::Info: #{logging_params}"
+      # puts "ActiveEndpoint::Logger Storage::Info: #{logging_params}"
 
       store!(store_params)
     end
@@ -82,10 +86,19 @@ module ActiveEndpoint
     ActiveSupport::Notifications.subscribe('active_endpoint.unregistred_probe') do |_name, _start, _ending, transaction_id, payload|
       store_params, logging_params = probe_params(transaction_id, payload[:probe])
 
-      puts "ActiveEndpoint::Logger Registration::Logging::Info: #{transaction_id} - #{logging_params}"
-      puts "ActiveEndpoint::Logger Registration::Storage::Info: #{transaction_id} - #{store_params}"
+      # puts "ActiveEndpoint::Logger Registration::Logging::Info: #{transaction_id} - #{logging_params}"
+      # puts "ActiveEndpoint::Logger Registration::Storage::Info: #{transaction_id} - #{store_params}"
 
       register!(store_params)
+    end
+
+    ActiveSupport::Notifications.subscribe('active_endpoint.clean_expired') do |_name, _start, _ending, _transaction_id, payload|
+      key = payload[:expired][:key].split(':').last
+      period = payload[:expired][:period] * ActiveEndpoint.storage_keep_periods
+
+      # puts "ActiveEndpoint::Logger Storage::Expired::Info #{key}"
+
+      clean!(key, period)
     end
   end
 end
