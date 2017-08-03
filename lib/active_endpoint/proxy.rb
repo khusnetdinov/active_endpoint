@@ -9,6 +9,7 @@ module ActiveEndpoint
       request = ActiveEndpoint::Request.new(env)
 
       # puts "ActiveEndpoint::Logger[Constraints!] #{ActiveEndpoint.constraints.inspect}"
+      # puts "ActiveEndpoint::Logger[Tags!] #{ActiveEndpoint.tags.inspect}"
 
       if @matcher.whitelisted?(request)
         track_begin(request)

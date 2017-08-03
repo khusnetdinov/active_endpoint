@@ -2,10 +2,12 @@ require 'base64'
 require 'rack'
 require 'rack/request'
 require 'active_support/time'
+require 'active_support/rails'
 require 'active_support/core_ext/module/delegation'
 
 require 'active_endpoint/concerns/configurable'
 require 'active_endpoint/concerns/optionable'
+require 'active_endpoint/concerns/tagable'
 require 'active_endpoint/concerns/rails_routable'
 require 'active_endpoint/routes/blacklist'
 require 'active_endpoint/routes/constraints'
@@ -38,7 +40,7 @@ module ActiveEndpoint
   define_setting :storage_period, 1.day
   define_setting :storage_keep_periods, 2
 
-  # define_setting :tags, ActiveEndpoint::Tags.new
+  define_setting :tags, ActiveEndpoint::Tags.new
 end
 
 if defined?(::Rails)

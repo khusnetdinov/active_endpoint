@@ -94,9 +94,9 @@ module ActiveEndpoint
 
     ActiveSupport::Notifications.subscribe('active_endpoint.clean_expired') do |_name, _start, _ending, _transaction_id, payload|
       key = payload[:expired][:key].split(':').last
-      period = payload[:expired][:period] * ActiveEndpoint.storage_keep_periods
+      period = DateTime.now - (payload[:expired][:period] * ActiveEndpoint.storage_keep_periods).seconds
 
-      # puts "ActiveEndpoint::Logger Storage::Expired::Info #{key}"
+      # puts "ActiveEndpoint::Logger Storage::Expired::Info #{key} ~ #{period}"
 
       clean!(key, period)
     end

@@ -14,6 +14,23 @@ module ActiveEndpoint
     scope :probe, ->(endpoint) { where(endpoint: endpoint) }
     scope :taken_before, ->(period) { where('created_at < ?', period) }
 
+    def tag
+      definitions = ActiveEndpoint.tags.definition
+      methods = Tagable::METHODS
+
+      definitions.each do |tag_name, operators|
+        last_operation_index = operators.length - 1
+
+        exec_operator = ''
+        operators.each_with_index do |(key, value), index|
+          exec_operator << "#{duration * 1000} #{methods[key]} #{value}"
+          exec_operator << (index == last_operation_index ? '' : ' && ')
+        end
+
+        return tag_name if eval(exec_operator)
+      end
+    end
+
     private
 
     def skip_validation?
