@@ -163,6 +163,48 @@ ActiveEndpoint.configure do |endpoint|
 end
 ```
 
+### Tagging probes
+For analizing probes you can define tags for deviding probes in groups by duration of probe. Time is defined in milliseconds. See example:
+
+```ruby
+ActiveEndpoint.configure do |endpoint|
+  endpoint.tags.configure do |tags|
+    tags.add(:fast, { less_than: 250 })
+    tags.add(:normal, { greater_than_or_equal_to: 250, less_than: 500 })
+    tags.add(:slow, { greater_than_or_equal_to: 250, less_than: 500 })
+    tags.add(:acceptable, { greater_than_or_equal_to: 500, less_than: 100 })
+    tags.add(:need_optimization, { greater_than_or_equal_to: 1000 })
+  end
+end
+```
+
+#### Mehods for conditions
+
+   - greater_than = '>'
+   - greater_than_or_equal_to = '>=',
+   - equal_to = '=',
+   - less_than = '<',
+   - less_than_or_equal_to = '<=',
+   
+#### Tagged model scopes
+
+Defined tags also usefull for scopes queries:
+ 
+```ruby
+ActiveEndpoint::Probe.tagged_as(:need_optimization)
+#=> Returns all probes with truthy conditions { greater_than_or_equal_to: 1000 }
+```
+
+#### Instance methods
+
+Check tag on model:
+
+```ruby
+ActiveEndpoint::Probe.last.tag
+#=> Returns :need_optmization
+```
+
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
