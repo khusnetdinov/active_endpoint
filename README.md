@@ -1,6 +1,43 @@
 # ActiveEndpoint [![Build Status](https://travis-ci.org/khusnetdinov/active_endpoint.svg?branch=master)](https://travis-ci.org/khusnetdinov/active_endpoint)
+## You tracking request tool for rails applications
+
+![img](http://res.cloudinary.com/dtoqqxqjv/image/upload/c_scale,w_346/v1501331806/github/active_probe.jpg)
+
+
+## Usage
 
 ActiveEndpoint is middleware for Rails application that collect and analize request and response per request for route endpoint. It works with minimum affecting to application response time.
+
+It use `ActiveSupport::Notifications` and `Cache Storage` for reduction as possible affecting to application request / response.
+
+Probes were taken from request are stored in database for tracking information. For preventing probles there are possibility to constraint time and period and create back list for endpoints for data storage and taking request probes.
+
+Information about endpoint probes that stores in data base: 
+
+   - `:uuid` - uniq probe identifier
+   - `:endpoint` - requested endpoint
+   - `:path` - requested full path
+   - `:query_string` - request query string
+   - `:request_method` - http request method
+   - `:ip` - ip address asked request
+   - `:url` - request full url
+   - `:xhr` - is request ajax?
+   - `:started_at` - probe start time
+   - `:finished_at` - probe finish time 
+   - `:duration` - probe request duration
+   - `:params` - parsed requested params
+   - `:response` - Base64 encoded html response
+   - `:body` - Base64 encoded request body
+ 
+Information for additional inspecting requets that only are logging from Rack: `:base_url, :content_charset, :content_length, :content_type, :fullpath, :http_version, :http_connection, :http_accept_encoding, :http_accept_language, :media_type, :media_type_params, :method, :path_info, :pattern, :port, :protocol, :server_name, :ssl`.
+
+If ActiveEndpoint get request what not recognizible by rails router it stores as `unregistred` endpoint.
+
+## Requirements
+
+    * Redis - as cache storage
+    
+Be sure that you have all requrements installed on you machine.
 
 ## Installation
 
@@ -17,6 +54,16 @@ And then execute:
 Or install it yourself as:
 
     $ gem install active_endpoint
+    
+Setup project for using gem:
+
+    $ rails generate active_endpoint:install
+    
+Migrate data base for models:
+
+    $ rake[rails] db:migrate
+    
+Now project have all files and settings that allow you to use gem.
 
 ## Configuration
 
@@ -27,16 +74,16 @@ By default ActiveEndpoint set Rails application routes as `whitelist` routes, if
 ```ruby
 ActiveEndpoint.configure do |endpoint|
   endpoint.blacklist.configure  do |blacklist|
-    #=> ignore endpoint "welcome#index"
+    # Ignore endpoint "welcome#index"
     blacklist.add(endpoint: "welcome#index")
    
-    #=> ignore "web/users" controller actions
+    # Ignore "web/users" controller actions
     blacklist.add(resources: ["web/users"])
     
-    #=> ignore "web/users#show" action with scoped controller
+    # Ignore "web/users#show" action with scoped controller
     blacklist.add(scope: "web", resources: "users", actions: ["show"])
     
-    #=> ignore "admin" scope controllers
+    # Ignore "admin" scope controllers
     blacklist.add(scope: "admin")
   end
 end
@@ -70,23 +117,93 @@ end
 
 ### Constraints Time and Request limit for endpoint
 
-By default ActiveEndpoint takes default settings for time and amount requests for limitation probes for given endpoint. Also you can redifine them on constraining endpoint, see example below:
+By default ActiveEndpoint takes default settings for period and amount requests for limitation probes for given endpoint.
+Additional you can specify how much probes you want to keep in database and how much probes you can store for endpoint in data base per period.
+After expiration storage constraints expored probes automaticaly are removed from data base. And you don't need care about it.
+Also you can redifine them on constraining endpoint, see example below:
  
  ```ruby
 ActiveEndpoint.configure do |endpoint|
-  # Redefines default settings, 1 probe per 10 minutes for endpoint request
+  # Defines default settings, 1 probe per 10 minutes for endpoint request
   constraint_limit = 1
   constraint_period = 10.minutes
   
   endpoint.constraints.configure  do |constraints|
-    #=> constraint endpoint "welcome#index" with default period and limit
-    constraints.add(endpoint: "welcome#index")
-    
-    #=> constraints "web/users" controller actions with custom limit and period
+    # Constraint endpoint "welcome#index" with 1 minute period and default limit
+    # and configure data base constraints for saving 1000 probes per 1 week.
+    constraints.add(endpoint: "welcome#index", 1.minute, storage: {
+      limit: 1000, period: 1.week 
+    })
+   
+    # Constraints "web/users" controller actions with custom limit and period
+    # with defailt storage constraints
     constraints.add(resources: ["web/users"], period: 5.minutes, limit: 100)
   end
 end
 ``` 
+Warning!: For defining constraints you need at least define one of limit or period.
+
+### Storage settings
+
+ActiveEndpoint create two models in you rails application are `Probe` and STI child `UnregistredProbe`.
+For preventing problems with database probes are removes after user defined period. Also you can limit storeage probes in database.
+Here you can see default settings for all constraints. For preventing removes actual probes define period that you want keep.
+See example below:
+
+```ruby
+ActiveEndpoint.configure do |endpoint|
+  # Define default limit for maximum amount storage in database for endpoint.
+  endpoint.storage_limit = 1000
+  
+  # Define default period that models are kept in database. After this period they are destroyd. 
+  endpoint.storage_period
+  
+  # Define amount periods (constraint periods) that endpoints are kept in database.
+  endpoint.storage_keep_periods = 2
+end
+```
+
+### Tagging probes
+For analizing probes you can define tags for deviding probes in groups by duration of probe. Time is defined in milliseconds. See example:
+
+```ruby
+ActiveEndpoint.configure do |endpoint|
+  endpoint.tags.configure do |tags|
+    tags.add(:fast, { less_than: 250 })
+    tags.add(:normal, { greater_than_or_equal_to: 250, less_than: 500 })
+    tags.add(:slow, { greater_than_or_equal_to: 250, less_than: 500 })
+    tags.add(:acceptable, { greater_than_or_equal_to: 500, less_than: 100 })
+    tags.add(:need_optimization, { greater_than_or_equal_to: 1000 })
+  end
+end
+```
+
+#### Mehods for conditions
+
+   - greater_than = '>'
+   - greater_than_or_equal_to = '>=',
+   - equal_to = '=',
+   - less_than = '<',
+   - less_than_or_equal_to = '<=',
+   
+#### Tagged model scopes
+
+Defined tags also usefull for scopes queries:
+ 
+```ruby
+ActiveEndpoint::Probe.tagged_as(:need_optimization)
+#=> Returns all probes with truthy conditions { greater_than_or_equal_to: 1000 }
+```
+
+#### Instance methods
+
+Check tag on model:
+
+```ruby
+ActiveEndpoint::Probe.last.tag
+#=> Returns :need_optmization
+```
+
 
 ## License
 

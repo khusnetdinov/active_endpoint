@@ -1,10 +1,13 @@
+require 'base64'
 require 'rack'
 require 'rack/request'
 require 'active_support/time'
+require 'active_support/rails'
 require 'active_support/core_ext/module/delegation'
 
 require 'active_endpoint/concerns/configurable'
 require 'active_endpoint/concerns/optionable'
+require 'active_endpoint/concerns/tagable'
 require 'active_endpoint/concerns/rails_routable'
 require 'active_endpoint/routes/blacklist'
 require 'active_endpoint/routes/constraints'
@@ -33,14 +36,20 @@ module ActiveEndpoint
 
   define_setting :favicon, '/favicon.ico'
 
-  # define_setting :storage_limit, 100
-  # define_setting :storage_period, 1.week
-  # define_setting :storage, :postgres
+  define_setting :storage_limit, 1000
+  define_setting :storage_period, 1.day
+  define_setting :storage_keep_periods, 2
 
-  # define_setting :tags, ActiveEndpoint::Tags.new
+  define_setting :tags, ActiveEndpoint::Tags.new
 end
 
-if defined?(Rails)
+if defined?(::Rails)
   require 'active_endpoint/rails/middleware'
   require 'active_endpoint/rails/railtie'
+
+  require 'models/probe'
+  require 'models/unregistred_probe'
+
+  require 'rails/generators'
+  require 'rails/generators/migration'
 end

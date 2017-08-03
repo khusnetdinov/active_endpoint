@@ -42,10 +42,8 @@ module ActiveEndpoint
       # rule: start
       def rule(request)
         {
-          key: "#{prefix(request)}:#{request[:endpoint]}",
-          limit: rule_constraints(request)[:limit],
-          period: rule_constraints(request)[:period]
-        }
+          key: "#{prefix(request)}:#{request[:endpoint]}"
+        }.merge(fetch_constraints(request))
       end
 
       private
@@ -58,7 +56,7 @@ module ActiveEndpoint
         :defaults
       end
 
-      def rule_constraints(request)
+      def fetch_constraints(request)
         prefix = prefix(request)
 
         if prefix == :defaults
@@ -139,19 +137,55 @@ module ActiveEndpoint
         end
       end
 
+      # rule: start
       def constraints(options)
         {
-          limit: limit(options) || ActiveEndpoint.constraint_limit,
-          period: period(options) || ActiveEndpoint.constraint_period
+          rule: rule_constraints(options),
+          storage: storage_constraints(options)
         }
       end
 
       def default_constraints
         {
-            limit: ActiveEndpoint.constraint_limit,
-            period: ActiveEndpoint.constraint_period
+          rule: default_rule_constraints,
+          storage: default_storage_constraints
         }
       end
+
+      def rule_constraints(options)
+        defined_rule_constraints = {
+          limit: limit(options),
+          period: period(options)
+        }.compact
+
+        default_rule_constraints.merge(defined_rule_constraints)
+      end
+
+      def storage_constraints(options)
+        storage_options = storage(options)
+
+        defined_storage_constraints = {
+          limit: limit(storage_options),
+          period: period(storage_options)
+        }.compact
+
+        default_storage_constraints.merge(defined_storage_constraints)
+      end
+
+      def default_rule_constraints
+        {
+          limit: ActiveEndpoint.constraint_limit,
+          period: ActiveEndpoint.constraint_period
+        }
+      end
+
+      def default_storage_constraints
+        {
+          limit: ActiveEndpoint.storage_limit,
+          period: ActiveEndpoint.storage_period
+        }
+      end
+      # rule: end
     end
   end
 end
