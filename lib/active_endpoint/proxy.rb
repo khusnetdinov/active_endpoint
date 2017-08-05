@@ -3,13 +3,16 @@ module ActiveEndpoint
     def initialize
       @created_at = Time.now
       @matcher = ActiveEndpoint::Routes::Matcher.new
+      @logger = ActiveEndpoint.logger
     end
 
     def track(env, &block)
       request = ActiveEndpoint::Request.new(env)
 
-      # puts "ActiveEndpoint::Logger[Constraints!] #{ActiveEndpoint.constraints.inspect}"
-      # puts "ActiveEndpoint::Logger[Tags!] #{ActiveEndpoint.tags.inspect}"
+      if ActiveEndpoint.log_debug_info
+        @logger.debug('ActiveEndpoint::Blacklist', ActiveEndpoint.blacklist.inspect)
+        @logger.debug('ActiveEndpoint::Constraints', ActiveEndpoint.constraints.inspect)
+      end
 
       if @matcher.whitelisted?(request)
         track_begin(request)
@@ -22,7 +25,7 @@ module ActiveEndpoint
         yield block
       end
     rescue => error
-      # puts "ActiveEndpoint::Logger[Proxy::Error]: #{error}"
+      @logger.error(self.class, error)
 
       yield block
     end

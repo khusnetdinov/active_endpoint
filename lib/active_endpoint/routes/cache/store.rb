@@ -45,12 +45,7 @@ module ActiveEndpoint
           limited = limit.present? && limit == 0
           expired = period == 0
 
-          # puts "ActiveEndpoint::Logger Store::Limit #{prefix} - #{limit}"
-          # puts "ActiveEndpoint::Logger Store::Period #{prefix} - #{period}"
-
           if limit.nil? && expired && block_given?
-            # puts "ActiveEndpoint::Logger Store::Epired::Event #{options[:key]}"
-
             yield(options[:key], constraints[:period])
           end
 

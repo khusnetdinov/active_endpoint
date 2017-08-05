@@ -68,7 +68,7 @@ module ActiveEndpoint
     def self.handle_creation(probe)
       probe.save
     rescue => error
-      # puts "ActiveEndpoint::Logger Storage::Error: #{probe} - #{probe.error}"
+      ActiveEmdpoint.logger.error(self.class, error)
     end
 
     def self.clean!(endpoint, period)
@@ -78,7 +78,7 @@ module ActiveEndpoint
     ActiveSupport::Notifications.subscribe('active_endpoint.tracked_probe') do |_name, _start, _ending, transaction_id, payload|
       store_params, logging_params = probe_params(transaction_id, payload[:probe])
 
-      # puts "ActiveEndpoint::Logger Storage::Info: #{logging_params}"
+      ActiveEndpoint.logger.info('ActiveEndpoint::Storage', logging_params, ActiveEndpoint.log_probe_info)
 
       store!(store_params)
     end
@@ -86,17 +86,21 @@ module ActiveEndpoint
     ActiveSupport::Notifications.subscribe('active_endpoint.unregistred_probe') do |_name, _start, _ending, transaction_id, payload|
       store_params, logging_params = probe_params(transaction_id, payload[:probe])
 
-      # puts "ActiveEndpoint::Logger Registration::Logging::Info: #{transaction_id} - #{logging_params}"
-      # puts "ActiveEndpoint::Logger Registration::Storage::Info: #{transaction_id} - #{store_params}"
+      if ActiveEndpoint.log_debug_info
+        ActiveEndpoint.logger.info('ActiveEndpoint::Storage', store_params.inspect)
+        ActiveEndpoint.logger.info('ActiveEndpoint::Storage', logging_params.inspect)
+      end
 
       register!(store_params)
     end
 
-    ActiveSupport::Notifications.subscribe('active_endpoint.clean_expired') do |_name, _start, _ending, _transaction_id, payload|
+    ActiveSupport::Notifications.subscribe('active_endpoint.clean_expired') do |_name, _start, _ending, transaction_id, payload|
       key = payload[:expired][:key].split(':').last
       period = DateTime.now - (payload[:expired][:period] * ActiveEndpoint.storage_keep_periods).seconds
 
-      # puts "ActiveEndpoint::Logger Storage::Expired::Info #{key} ~ #{period}"
+      if ActiveEndpoint.log_debug_info
+        ActiveEndpoint.logger.info('ActiveEndpoint::Storage', {key: key, period: period, uuid: transaction_id}.inspect)
+      end
 
       clean!(key, period)
     end
