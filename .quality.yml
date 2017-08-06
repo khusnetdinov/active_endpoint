@@ -1,0 +1,16 @@
+max: &max_quantity
+  max: 99
+config:
+  - linter: :rubocop
+    options: '--format json'
+    <<: *max_quantity
+  - linter: :reek
+    options: '--format json'
+    <<: *max_quantity
+  - linter: 'slim-lint'
+    options: 'app/views --reporter json'
+    <<: *max_quantity
+  - linter: 'scss-lint'
+    options: 'app/assets --format JSON'
+    <<: *max_quantity
+
