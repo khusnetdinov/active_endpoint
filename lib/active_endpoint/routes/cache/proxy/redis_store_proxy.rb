@@ -2,6 +2,9 @@ module ActiveEndpoint
   module Routes
     module Cache
       module Proxy
+        require 'redis'
+        require 'redis-store'
+
         class RedisStoreProxy
           def initialize
             @prefix = ActiveEndpoint.cache_prefix

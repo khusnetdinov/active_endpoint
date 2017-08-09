@@ -36,4 +36,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rails', '~> 4.0.0'
   spec.add_development_dependency 'activesupport', '~> 4.0.0'
   spec.add_development_dependency 'redis-activesupport'
+  spec.add_development_dependency 'pry'
 end

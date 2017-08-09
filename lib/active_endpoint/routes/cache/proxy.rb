@@ -2,6 +2,8 @@ module ActiveEndpoint
   module Routes
     module Cache
       module Proxy
+        require 'active_support/core_ext'
+
         class AdapterError < ::StandardError; end
 
         CLIENTS = {

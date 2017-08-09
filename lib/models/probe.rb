@@ -1,5 +1,6 @@
 module ActiveEndpoint
-  class Probe < ActiveRecord::Base
+  require 'active_record'
+  class Probe < ::ActiveRecord::Base
     def self.table_name_prefix
       'active_enpoint_'
     end
