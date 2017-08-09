@@ -1,0 +1,9 @@
+<h2>Proberesponse for <%= @probe.endpoint %>  with <%= @probe.uuid %></h2>
+
+<div class="">
+  <%= Base64.decode64(@probe.response) %>
+</div>
+
+<br/>
+
+<%= link_to 'Back', :back, class: '' %>

@@ -15,6 +15,10 @@ module Configurable
     end
   end
 
+  def get_settings(name)
+    class_variable_get("@@#{name}")
+  end
+
  private
 
   def define_class_method(name, &block)

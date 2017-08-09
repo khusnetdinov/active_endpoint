@@ -1,0 +1,28 @@
+<h1>Probes</h1>
+
+<table class="table table-hover table-bordered">
+  <thead>
+  <tr>
+    <th>endpoint</th>
+    <th>method</th>
+    <th>amount in period</th>
+    <th>Average duration</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% if @probes_group.any?%>
+    <% @probes_group.each do |group| %>
+      <tr>
+        <th><%= group[:endpoint] %></th>
+        <td><%= group[:method] %></td>
+        <td><%= group[:amount] %></td>
+        <td><%= (group[:duration].round(3) * 1000).to_i %></td>
+        <td><%= link_to 'Show', active_endpoint.probe_path(id: group[:endpoint]), class: 'btn btn-info btn-sm' %></td>
+      </tr>
+    <% end %>
+  <% else %>
+      <tr><td colspan="4" style="text-align: center;">No Probes</td></tr>
+  <% end %>
+  </tbody>
+</table>

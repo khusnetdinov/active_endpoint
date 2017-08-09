@@ -14,12 +14,13 @@ ActiveEndpoint.configure do |endpoint|
   endpoint.storage_keep_periods = 2
 
   endpoint.constraints.configure do |constraints|
-    # constraints.add(endpoint: 'web/welcome#index', limit: 100, period: 1.minute, storage: {
-    #   limit: 1000, period: 1.week
+    # constraints.add(endpoint: 'web/welcome#index',
+    #   rule: { limit: 100, period: 1.minute },
+    #   storage: { limit: 1000, period: 1.week }
     # })
-    # constraints.add(scope: 'web', resources: 'users', limit: 100)
-    # constraints.add(scope: 'web', resources: ['users'], actions: [:show, :edit, :update], limit: 10, period: 1.minute)
-    # constraints.add(scope: 'web', limit: 100, period: 1.minute)
+    # constraints.add(scope: 'web', resources: 'users', rule: { limit: 100 })
+    # constraints.add(scope: 'web', resources: ['users'], actions: [:show, :edit, :update], rule: { limit: 10, period: 1.minute })
+    # constraints.add(scope: 'web', rule: { limit: 100, period: 1.minute })
   end
 
   endpoint.tags.configure do |tags|
@@ -29,4 +30,9 @@ ActiveEndpoint.configure do |endpoint|
     # tags.add(:acceptable, { greater_than_or_equal_to: 500, less_than: 100 })
     # tags.add(:need_optimization, { greater_than_or_equal_to: 1000 })
   end
+
+  define_setting :logger, ActiveEndpoint::Logger
+
+  define_setting :log_probe_info, false
+  define_setting :log_debug_info, false
 end

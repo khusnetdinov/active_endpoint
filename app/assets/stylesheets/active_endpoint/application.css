@@ -1,0 +1,10 @@
+/* = require_tree . */
+/* = require_self */
+
+.list-group-item > .badge {
+  background-color: auto !important;
+}
+
+.btn-sm {
+    padding: 0 9px !important;
+}

@@ -1,0 +1,18 @@
+<nav class="navbar-default navbar-toggleable-md navbar-light bg-faded">
+  <div class="container">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <%= link_to 'ActiveEndpoint', active_endpoint.root_path, class: 'navbar-brand'%>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="nav navbar-nav">
+        <li class="<%= controller_name == 'probes' ? 'active' : '' %>">
+          <%= link_to 'Probes', active_endpoint.probes_path, class: '' %>
+        </li>
+        <li class="<%= controller_name == 'unregistred_probes' ? 'active' : '' %>">
+          <%= link_to 'Unregistred Probes', active_endpoint.unregistred_probes_path, class: '' %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

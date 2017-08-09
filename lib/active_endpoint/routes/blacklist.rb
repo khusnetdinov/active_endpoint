@@ -32,6 +32,22 @@ module ActiveEndpoint
         add_scopes(options) if scope(options).present?
       end
 
+      def get_endpoints
+        @endpoints
+      end
+
+      def get_resources
+        @resources
+      end
+
+      def get_actions
+        @actions
+      end
+
+      def get_scopes
+        @scopes
+      end
+
       private
 
       def add_endpoint(options)
@@ -90,7 +106,7 @@ module ActiveEndpoint
 
       def reduce_state(collection, request)
         collection.reduce(false) do |state, subject|
-          state || request[:endpoint].start_with?(subject)
+          state || request[:endpoint].present? && request[:endpoint].start_with?(subject)
         end
       end
 
