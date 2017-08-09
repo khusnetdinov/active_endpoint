@@ -45,7 +45,7 @@ module ActiveEndpoint
       end
 
       def trackable?(request)
-        !(engine?(request) ||assets?(request) || favicon?(request) || blacklisted?(request.probe))
+        !(engine?(request) || assets?(request) || favicon?(request) || blacklisted?(request.probe))
       end
     end
   end

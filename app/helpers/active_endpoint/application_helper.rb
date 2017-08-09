@@ -11,7 +11,7 @@ module ActiveEndpoint
       :log_debug_info,
       :storage_limit,
       :storage_period,
-      :storage_keep_periods,
+      :storage_keep_periods
     ].freeze
 
     TAGS_COLORS = [
@@ -29,7 +29,12 @@ module ActiveEndpoint
     def tags
       tags = []
       ActiveEndpoint.tags.definition.to_a.each_with_index do |definition, index|
-        tags << [definition.first, tag_label_by(index), definition.last, "ActiveEndpoint::Probe.tagged_as(:#{definition.first})"]
+        tags << [
+          definition.first,
+          tag_label_by(index),
+          definition.last,
+          "ActiveEndpoint::Probe.tagged_as(:#{definition.first})"
+        ]
       end
       tags
     end
@@ -39,19 +44,19 @@ module ActiveEndpoint
     end
 
     def endpoints
-      ActiveEndpoint.blacklist.get_endpoints
+      ActiveEndpoint.blacklist.fetch_endpoints
     end
 
     def resources
-      ActiveEndpoint.blacklist.get_resources
+      ActiveEndpoint.blacklist.fetch_resources
     end
 
     def actions
-      ActiveEndpoint.blacklist.get_actions
+      ActiveEndpoint.blacklist.fetch_actions
     end
 
     def scopes
-      ActiveEndpoint.blacklist.get_scopes
+      ActiveEndpoint.blacklist.fetch_scopes
     end
 
     def endpoints_constraints
@@ -91,7 +96,11 @@ module ActiveEndpoint
     def constraints_for_html(endpoint, constraints)
       rule = constraints[:rule]
       storage = constraints[:storage]
-      [endpoint, "#{rule[:limit]} per #{distance_of_time_in_words(rule[:period])}", "#{storage[:limit]} per #{distance_of_time_in_words(storage[:period])}"]
+
+      rules = "#{rule[:limit]} per #{distance_of_time_in_words(rule[:period])}"
+      storages = "#{storage[:limit]} per #{distance_of_time_in_words(storage[:period])}"
+
+      [endpoint, rules, storages]
     end
   end
 end

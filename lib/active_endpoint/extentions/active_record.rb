@@ -2,11 +2,11 @@ module ActiveEndpoint
   module Extentions
     module ActiveRecord
       METHODS = {
-          greater_than: '>',
-          greater_than_or_equal_to: '>=',
-          equal_to: '=',
-          less_than: '<',
-          less_than_or_equal_to: '<=',
+        greater_than: '>',
+        greater_than_or_equal_to: '>=',
+        equal_to: '=',
+        less_than: '<',
+        less_than_or_equal_to: '<='
       }.freeze
 
       def tagged_as(tag, tags = ActiveEndpoint.tags.definition)

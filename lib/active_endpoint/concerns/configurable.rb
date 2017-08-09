@@ -19,7 +19,7 @@ module Configurable
     class_variable_get("@@#{name}")
   end
 
- private
+  private
 
   def define_class_method(name, &block)
     (class << self; self; end).instance_eval do

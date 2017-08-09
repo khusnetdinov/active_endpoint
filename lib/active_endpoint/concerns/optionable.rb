@@ -2,7 +2,7 @@ module Optionable
   private
 
   def parse(options)
-    options.inject({}) do |hash, option|
+    options.inject({}) do |hash, _option|
       hash[options.first] = options.last
     end
   end

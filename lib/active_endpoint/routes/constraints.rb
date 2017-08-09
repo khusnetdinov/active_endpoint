@@ -39,19 +39,19 @@ module ActiveEndpoint
         add_scopes(options) if scope(options).present?
       end
 
-      def get_endpoints
+      def fetch_endpoints
         @endpoints
       end
 
-      def get_resources
+      def fetch_resources
         @resources
       end
 
-      def get_actions
+      def fetch_actions
         @actions
       end
 
-      def get_scopes
+      def fetch_scopes
         @scopes
       end
 
@@ -94,23 +94,23 @@ module ActiveEndpoint
         scope = scope(options)
 
         if actions.present? && actions.any?
-          _actions = {}
+          temp_actions = {}
           if resources.is_a?(Array)
             resources.each do |controller_name|
-              actions.each { |action| _actions["#{controller_name}##{action}"] = constraints(options) }
+              actions.each { |action| temp_actions["#{controller_name}##{action}"] = constraints(options) }
             end
           else
-            actions.each { |action| _actions["#{resources}##{action}"] = constraints(options) }
+            actions.each { |action| temp_actions["#{resources}##{action}"] = constraints(options) }
           end
-          @actions = @actions.merge(apply(scope, _actions))
+          @actions = @actions.merge(apply(scope, temp_actions))
         else
-          _resources = {}
+          temp_resources = {}
           if resources.is_a?(Array)
-            resources.each { |resource| _resources[resource] = constraints(options) }
+            resources.each { |resource| temp_resources[resource] = constraints(options) }
           else
-            _resources[resources] = constraints(options)
+            temp_resources[resources] = constraints(options)
           end
-          @resources = @resources.merge(apply(scope, _resources))
+          @resources = @resources.merge(apply(scope, temp_resources))
         end
       end
 

@@ -9,7 +9,7 @@ module ActiveEndpoint
     scope :registred, ->() { where.not(endpoint: :unregistred) }
     scope :probe, ->(endpoint) { where(endpoint: endpoint) }
     scope :taken_before, ->(period) { where('created_at < ?', period) }
-    scope :group_by_endpoint, -> {
+    scope :group_by_endpoint, ->() {
       execute_statement("
         select count(*) as amount, endpoint, request_method as method, avg(duration) as duration
         from active_endpoint_probes group by endpoint, request_method

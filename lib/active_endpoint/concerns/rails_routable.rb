@@ -1,5 +1,5 @@
 module RailsRoutable
-  ACTION_KEYS = [:controller, :action]
+  ACTION_KEYS = [:controller, :action].freeze
 
   def rails_action?(request)
     rails_action(request).present?
