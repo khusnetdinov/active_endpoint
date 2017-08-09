@@ -1,6 +1,6 @@
 class CreateActiveEndpointProbes < ActiveRecord::Migration<%= migration_version %>
   def change
-    create_table :active_enpoint_probes do |t|
+    create_table :active_endpoint_probes do |t|
       t.string :type, default: '', index: true
 
       t.string :uuid, null: false, index: true

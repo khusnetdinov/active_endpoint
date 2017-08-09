@@ -1,0 +1,117 @@
+<div class="card">
+  <div class="card-header">Constraints</div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <div class="row">
+        <div class="col">
+          <table class="table">
+            <thead class="thead-default">
+            <tr>
+              <th>Endpoints</th>
+              <th>Request limits</th>
+              <th>Storage limits</th>
+            </tr>
+            </thead>
+            <tbody>
+              <%- if endpoints_constraints.any? %>
+                <%- endpoints_constraints.each do |endpoint, request, storage| %>
+                  <tr>
+                    <td style="width: 33%;"><%= endpoint %></td>
+                    <td style="width: 33%;"><%= request %></td>
+                    <td style="width: 33%;"><%= storage %></td>
+                  </tr>
+                <% end %>
+              <% else %>
+                <tr><td colspan="3" style="text-align: center;">No Constraints</tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="row">
+        <div class="col">
+          <table class="table">
+            <thead class="thead-default">
+            <tr>
+              <th>Resources</th>
+              <th>Request limits</th>
+              <th>Storage limits</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% if resources_constraints.any? %>
+              <%- resources_constraints.each do |endpoint, request, storage| %>
+                  <tr>
+                    <td style="width: 33%;"><%= endpoint %></td>
+                    <td style="width: 33%;"><%= request %></td>
+                    <td style="width: 33%;"><%= storage %></td>
+                  </tr>
+              <% end %>
+            <% else %>
+              <tr><td colspan="3" style="text-align: center;">No Constraints</tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="row">
+        <div class="col">
+          <table class="table">
+            <thead class="thead-default">
+            <tr>
+              <th>Actions</th>
+              <th>Request limits</th>
+              <th>Storage limits</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% if actions_constraints.any? %>
+              <%- actions_constraints.each do |endpoint, request, storage| %>
+                  <tr>
+                    <td style="width: 33%;"><%= endpoint %></td>
+                    <td style="width: 33%;"><%= request %></td>
+                    <td style="width: 33%;"> <%= storage %></td>
+                  </tr>
+              <% end %>
+            <% else %>
+              <tr><td colspan="3" style="text-align: center;">No Constraints</tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </li>
+    <li class="list-group-item">
+      <div class="row">
+        <div class="col">
+          <table class="table">
+            <thead class="thead-default">
+            <tr>
+              <th>Scopes</th>
+              <th>Request limits</th>
+              <th>Storage limits</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% if scopes_constraints.any? %>
+              <%- scopes_constraints.each do |endpoint, request, storage| %>
+                  <tr>
+                    <td style="width: 33%;"><%= endpoint %></td>
+                    <td style="width: 33%;"><%= request %></td>
+                    <td style="width: 33%;"><%= storage %></td>
+                  </tr>
+              <% end %>
+            <% else %>
+              <tr><td colspan="3" style="text-align: center;">No Constraints</tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

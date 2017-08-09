@@ -40,8 +40,12 @@ module ActiveEndpoint
         (request.path == '/favicon.ico') || (request.path == @favicon)
       end
 
+      def engine?(request)
+        request.path.include?('active_endpoint')
+      end
+
       def trackable?(request)
-        !(assets?(request) || favicon?(request) || blacklisted?(request.probe))
+        !(engine?(request) ||assets?(request) || favicon?(request) || blacklisted?(request.probe))
       end
     end
   end

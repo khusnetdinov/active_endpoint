@@ -1,0 +1,13 @@
+<div class="card">
+  <div class="card-header">Settings</div>
+  <ul class="list-group">
+    <%- settings.each do |setting|%>
+    <li class="list-group-item">
+      <div class="row">
+        <div class="col"><%= setting.to_s.gsub('_', ' ').capitalize %></div>
+        <div class="col"><%= ActiveEndpoint.get_settings(setting) %></div>
+      </div>
+    </li>
+    <% end %>
+  </ul>
+</div>

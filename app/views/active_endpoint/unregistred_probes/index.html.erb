@@ -1,0 +1,28 @@
+<h1>Unregistred Probes</h1>
+
+<table class="table table-hover table-bordered">
+  <thead>
+  <tr>
+    <th>uuid</th>
+    <th>path</th>
+    <th>query string</th>
+    <th>started_at</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+    <% if @probes.any?%>
+      <% @probes.each do |probe| %>
+      <tr>
+        <th><%= probe.uuid %></th>
+        <td><%= probe.path %></td>
+        <td><%= probe.query_string%></td>
+        <td><%= probe.started_at %></td>
+        <td><%= link_to 'Remove', active_endpoint.unregistred_probe_path(probe.id), method: :delete, class: 'btn btn-danger btn-sm' %></td>
+      </tr>
+      <% end%>
+    <% else %>
+      <tr><td colspan="4">No Probes</td></tr>
+    <% end %>
+  </tbody>
+</table>

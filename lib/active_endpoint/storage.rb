@@ -72,7 +72,7 @@ module ActiveEndpoint
     end
 
     def self.clean!(endpoint, period)
-      ActiveEndpoint::Probe.registred.probe(endpoint).taken_before(period).destroy_all
+      # ActiveEndpoint::Probe.registred.probe(endpoint).taken_before(period).destroy_all
     end
 
     ActiveSupport::Notifications.subscribe('active_endpoint.tracked_probe') do |_name, _start, _ending, transaction_id, payload|

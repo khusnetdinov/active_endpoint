@@ -1,0 +1,43 @@
+<h1>Probes for <%= @endpoint %></h1>
+
+<table class="table table-hover table-bordered">
+  <thead>
+  <tr>
+    <th>uuid</th>
+    <th>ip</th>
+    <th>xhr?</th>
+    <th>query string</th>
+    <th>params</th>
+    <th>duration</th>
+    <th>tag</th>
+    <td>created at</td>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <%- if @probes.any? %>
+    <%- @probes.each do |probe| %>
+      <tr>
+        <td><%= probe.uuid %></td>
+        <td><%= probe.ip %></td>
+        <td><%= probe.xhr %></td>
+        <td><%= probe.query_string %></td>
+        <td><%= probe.params %></td>
+        <td><%= (probe.duration * 1000).to_i %></td>
+        <td>
+          <span class="label <%= label_for(probe.tag) %>">
+            <%= probe.tag %>
+          </span>
+        </td>
+        <td><%= probe.created_at %></td>
+        <td>
+          <%= link_to 'Show Response', active_endpoint.probe_show_response_path(probe), class: 'btn btn-info btn-sm' %>
+          <%= link_to 'Remove', active_endpoint.probe_path(probe), method: :delete, class: 'btn btn-danger btn-sm' %>
+        </td>
+      </tr>
+    <% end%>
+  <% else %>
+      <tr><td colspan="2" style="text-align: center;">No Probes</td></tr>
+  <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,57 @@
+<div class="card">
+  <div class="card-header">Blacklist</div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <div class="row">
+        <div class="col">
+          <table class="table">
+            <thead class="thead-default">
+              <tr><th>Endpoints</th></tr>
+            </thead>
+            <tbody>
+              <%- endpoints.each do |endpoint| %>
+                <tr><td><%= endpoint %></td></tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="col">
+          <table class="table">
+            <thead class="thead-default">
+            <tr><th>Resources</th></tr>
+            </thead>
+            <tbody>
+            <%- resources.each do |resource| %>
+                <tr><td><%= resource %></td></tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="col">
+          <table class="table">
+            <thead class="thead-default">
+            <tr><th>Actions</th></tr>
+            </thead>
+            <tbody>
+            <%- actions.each do |actions| %>
+                <tr><td><%= actions %></td></tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="col">
+          <table class="table">
+            <thead class="thead-default">
+            <tr><th>Scope</th></tr>
+            </thead>
+            <tbody>
+            <%- scopes.each do |scopes| %>
+                <tr><td><%= scopes %></td></tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

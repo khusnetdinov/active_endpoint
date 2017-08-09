@@ -50,12 +50,10 @@ module ActiveEndpoint
 end
 
 if defined?(::Rails)
-  require 'active_endpoint/rails/middleware'
-  require 'active_endpoint/rails/railtie'
-
-  require 'models/probe'
-  require 'models/unregistred_probe'
-
   require 'rails/generators'
   require 'rails/generators/migration'
+
+  require 'active_endpoint/rails/middleware'
+  require 'active_endpoint/rails/railtie'
+  require 'active_endpoint/engine'
 end

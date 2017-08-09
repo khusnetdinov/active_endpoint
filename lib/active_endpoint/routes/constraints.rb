@@ -29,7 +29,7 @@ module ActiveEndpoint
       def add(*options)
         options = parse(options)
 
-        if limit(options).nil? && period(options).nil?
+        if options[:rule].nil?
           message = "Constraints can't have empty limit and period!\n"
           raise ActiveEndpoint::Routes::Constraints::Error.new(message)
         end
@@ -37,6 +37,22 @@ module ActiveEndpoint
         add_endpoint(options) if endpoint(options).present?
         add_resources(options) if resources(options).present?
         add_scopes(options) if scope(options).present?
+      end
+
+      def get_endpoints
+        @endpoints
+      end
+
+      def get_resources
+        @resources
+      end
+
+      def get_actions
+        @actions
+      end
+
+      def get_scopes
+        @scopes
       end
 
       # rule: start
