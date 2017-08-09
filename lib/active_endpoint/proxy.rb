@@ -4,6 +4,7 @@ module ActiveEndpoint
       @created_at = Time.now
       @matcher = ActiveEndpoint::Routes::Matcher.new
       @logger = ActiveEndpoint.logger
+      @notifier = ActiveSupport::Notifications
     end
 
     def track(env, &block)
@@ -40,15 +41,24 @@ module ActiveEndpoint
       @response = ActiveEndpoint::Response.new(response).probe
       @finished_at = finished_at
 
-      ActiveSupport::Notifications.instrument('active_endpoint.tracked_probe', probe: {
-        created_at: @created_at, finished_at: @finished_at, request: @request, response: @response
-      }) if @matcher.allow_account?(@request)
+      probe = {
+        created_at: @created_at,
+        finished_at: @finished_at,
+        request: @request,
+        response: @response
+      }
+
+      @notifier.instrument('active_endpoint.tracked_probe', probe: probe) if @matcher.allow_account?(@request)
     end
 
     def register(request)
-      ActiveSupport::Notifications.instrument('active_endpoint.unregistred_probe', probe: {
-        created_at: @created_at, finished_at: @finished_at, request: request.probe
-      }) if @matcher.allow_register?(request)
+      unregistred = {
+        created_at: @created_at,
+        finished_at: @finished_at,
+        request: request.probe
+      }
+
+      @notifier.instrument('active_endpoint.unregistred_probe', probe: unregistred) if @matcher.allow_register?(request)
     end
   end
 end

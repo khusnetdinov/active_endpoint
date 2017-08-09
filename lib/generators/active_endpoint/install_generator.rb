@@ -20,13 +20,15 @@ module ActiveEndpoint
 
       def copy_migration_file
         puts '=> Create migration file in db/migrate/***_create_active_endpoint_probes.rb'
-        migration_template 'migration.rb', 'db/migrate/create_active_endpoint_probes.rb', migration_version: migration_version
+        migration_template 'migration.erb', 'db/migrate/create_active_endpoint_probes.rb',
+                           migration_version: migration_version
       end
 
       private
 
       def migration_version
-        "[#{::Rails::VERSION::MAJOR}.#{::Rails::VERSION::MINOR}]" if ::Rails.version.start_with? '5'
+        last_rails = ::Rails.version.start_with?('5')
+        "[#{::Rails::VERSION::MAJOR}.#{::Rails::VERSION::MINOR}]" if last_rails
       end
     end
   end

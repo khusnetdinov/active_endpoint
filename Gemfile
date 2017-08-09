@@ -10,8 +10,8 @@ gemspec
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
-gem 'rack', '~> 1.0'
 gem 'activesupport', '~> 4.0.0'
+gem 'rack', '~> 1.0'
 gem 'redis-activesupport'
 
 gem 'sass-rails'
@@ -19,5 +19,7 @@ gem 'sass-rails'
 group :development do
   gem 'bundler', '~> 1.14'
   gem 'rake', '~> 10.0'
+  gem 'reek'
   gem 'rspec', '~> 3.0'
+  gem 'rubocop'
 end

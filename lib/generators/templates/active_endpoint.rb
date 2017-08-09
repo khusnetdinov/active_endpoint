@@ -1,5 +1,5 @@
 ActiveEndpoint.configure do |endpoint|
-  endpoint.blacklist.configure  do |list|
+  endpoint.blacklist.configure do |list|
     # list.add(endpoint: 'web/welcome#index')
     # list.add(resources: 'web/users', actions: ['show'])
     # list.add(scope: 'web', resources: 'users', actions: ['show'])
@@ -19,7 +19,9 @@ ActiveEndpoint.configure do |endpoint|
     #   storage: { limit: 1000, period: 1.week }
     # })
     # constraints.add(scope: 'web', resources: 'users', rule: { limit: 100 })
-    # constraints.add(scope: 'web', resources: ['users'], actions: [:show, :edit, :update], rule: { limit: 10, period: 1.minute })
+    # constraints.add(scope: 'web', resources: ['users'],
+    #   actions: [:show, :edit, :update],
+    #   rule: { limit: 10, period: 1.minute })
     # constraints.add(scope: 'web', rule: { limit: 100, period: 1.minute })
   end
 

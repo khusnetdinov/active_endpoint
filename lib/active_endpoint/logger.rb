@@ -21,7 +21,7 @@ module ActiveEndpoint
       end
 
       def message(caller, message)
-        "ActiveEndpoint::Logger [#{caller.to_s}] - #{message}"
+        "ActiveEndpoint::Logger [#{caller}] - #{message}"
       end
     end
   end

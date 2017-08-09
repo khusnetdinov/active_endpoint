@@ -27,10 +27,8 @@ module ActiveEndpoint
 
         def storage_cache_allow?(options)
           cache_allow?(:storage, options) do |key, period|
-            ActiveSupport::Notifications.instrument('active_endpoint.clean_expired', expired: {
-              key: key,
-              period: period
-            })
+            ActiveSupport::Notifications.instrument('active_endpoint.clean_expired',
+                                                    expired: { key: key, period: period })
           end
         end
 
@@ -42,8 +40,8 @@ module ActiveEndpoint
           limit = cache.nil? ? cache : cache.to_i
           period = expires_in(key)
 
-          limited = limit.present? && limit == 0
-          expired = period == 0
+          limited = limit.present? && limit.zero?
+          expired = period.zero?
 
           if limit.nil? && expired && block_given?
             yield(options[:key], constraints[:period])
