@@ -4,10 +4,9 @@ module ActiveEndpoint
       include RailsRoutable
 
       def initialize
+        @favicon = ActiveEndpoint.favicon
         @blacklist = ActiveEndpoint.blacklist
         @cache_store = ActiveEndpoint::Routes::Cache::Store.new
-        @constraints = ActiveEndpoint.constraints
-        @favicon = ActiveEndpoint.favicon
       end
 
       def whitelisted?(request)
@@ -27,7 +26,8 @@ module ActiveEndpoint
       end
 
       def allow_account?(request)
-        @cache_store.allow?(@constraints.rule(request))
+        @constraint_rule = ActiveEndpoint::Routes::ConstraintRule.new(request).rule
+        @cache_store.allow?(@constraint_rule)
       end
 
       def allow_register?(request)

@@ -8,6 +8,8 @@ module ActiveEndpoint
 
         def initialize
           @store = ActiveEndpoint::Routes::Cache::Proxy.build(ActiveEndpoint.cache_store_client)
+          @logger = ActiveEndpoint.logger
+          @notifier = ActiveSupport::Notifications
         end
 
         def allow?(rule)
@@ -27,18 +29,29 @@ module ActiveEndpoint
 
         def storage_cache_allow?(options)
           cache_allow?(:storage, options) do |key, period|
-            ActiveSupport::Notifications.instrument('active_endpoint.clean_expired',
-                                                    expired: { key: key, period: period })
+            expired = {
+              key: key,
+              period: period
+            }
+
+            @notifier.instrument('active_endpoint.clean_expired', expired: expired)
           end
         end
 
-        def cache_allow?(prefix, options)
+        def cache_allow?(prefix, options, &block)
+
           key = "#{prefix}:#{options[:key]}"
           constraints = options[prefix]
 
           cache = read(key)
           limit = cache.nil? ? cache : cache.to_i
           period = expires_in(key)
+
+          if ActiveEndpoint.log_debug_info
+            @logger.debug('ActiveEndpoint::Cache::Store Prefix', prefix)
+            @logger.debug('ActiveEndpoint::Cache::Store Limit', limit)
+            @logger.debug('ActiveEndpoint::Cache::Store Period', period)
+          end
 
           limited = limit.present? && limit.zero?
           expired = period.zero?

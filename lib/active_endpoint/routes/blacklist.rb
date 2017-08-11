@@ -1,63 +1,20 @@
 module ActiveEndpoint
   module Routes
-    class Blacklist
-      include Configurable
-      include Optionable
-
+    class Blacklist < Momento
       def initialize
-        @endpoints = []
-        @resources = []
-        @actions = []
-        @scopes = []
-      end
-
-      def include?(request)
-        any_presented? [
-          present_endpoint?(request),
-          present_resource?(request),
-          present_action?(request),
-          present_scope?(request)
-        ]
-      end
-
-      def exclude?(request)
-        !include?(request)
-      end
-
-      def add(*options)
-        options = parse(options)
-
-        add_endpoint(options) if endpoint(options).present?
-        add_resources(options) if resources(options).present?
-        add_scopes(options) if scope(options).present?
-      end
-
-      def fetch_endpoints
-        @endpoints
-      end
-
-      def fetch_resources
-        @resources
-      end
-
-      def fetch_actions
-        @actions
-      end
-
-      def fetch_scopes
-        @scopes
+        super(Array)
       end
 
       private
 
       def add_endpoint(options)
-        @endpoints << endpoint(options)
+        @endpoints << fetch_endpoint(options)
       end
 
       def add_resources(options)
-        resources = resources(options)
-        actions = actions(options)
-        scope = scope(options)
+        resources = fetch_resources(options)
+        actions = fetch_actions(options)
+        scope = fetch_scope(options)
 
         if actions.present? && actions.any?
           temp_actions = []
@@ -81,7 +38,8 @@ module ActiveEndpoint
       end
 
       def add_scopes(options)
-        @scopes << scope(options)
+        scope = fetch_scope(options)
+        @scopes << scope unless @scopes.include?(scope)
       end
 
       def present_endpoint?(request)
@@ -98,16 +56,6 @@ module ActiveEndpoint
 
       def present_scope?(request)
         reduce_state(@scopes, request)
-      end
-
-      def any_presented?(chain)
-        chain.reduce(false) { |state, responder_state| state || responder_state }
-      end
-
-      def reduce_state(collection, request)
-        collection.reduce(false) do |state, subject|
-          state || request[:endpoint].present? && request[:endpoint].start_with?(subject)
-        end
       end
 
       def apply(scope, collection)

@@ -44,41 +44,41 @@ module ActiveEndpoint
     end
 
     def endpoints
-      ActiveEndpoint.blacklist.fetch_endpoints
+      ActiveEndpoint.blacklist.endpoints
     end
 
     def resources
-      ActiveEndpoint.blacklist.fetch_resources
+      ActiveEndpoint.blacklist.resources
     end
 
     def actions
-      ActiveEndpoint.blacklist.fetch_actions
+      ActiveEndpoint.blacklist.actions
     end
 
     def scopes
-      ActiveEndpoint.blacklist.fetch_scopes
+      ActiveEndpoint.blacklist.scopes
     end
 
     def endpoints_constraints
-      ActiveEndpoint.constraints.get_endpoints.map do |endpoint, constraints|
+      ActiveEndpoint.constraints.endpoints.map do |endpoint, constraints|
         constraints_for_html(endpoint, constraints)
       end
     end
 
     def resources_constraints
-      ActiveEndpoint.constraints.get_resources.map do |endpoint, constraints|
+      ActiveEndpoint.constraints.resources.map do |endpoint, constraints|
         constraints_for_html(endpoint, constraints)
       end
     end
 
     def actions_constraints
-      ActiveEndpoint.constraints.get_actions.map do |endpoint, constraints|
+      ActiveEndpoint.constraints.actions.map do |endpoint, constraints|
         constraints_for_html(endpoint, constraints)
       end
     end
 
     def scopes_constraints
-      ActiveEndpoint.constraints.get_scopes.map do |endpoint, constraints|
+      ActiveEndpoint.constraints.scopes.map do |endpoint, constraints|
         constraints_for_html(endpoint, constraints)
       end
     end

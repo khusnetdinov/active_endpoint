@@ -9,7 +9,7 @@ module ActiveEndpoint
         }.freeze
 
         def self.build(adapter)
-          if CLIENTS.keys.exclude?(adapter)
+          unless CLIENTS.keys.include?(adapter)
             message "You try to use unsupported cache store adapter! #{adapter}\n"
             raise ActiveEndpoint::Routes::Cache::Proxy::AdapterError.new(message)
           end
