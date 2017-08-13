@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.authors = ['Marat Khusnetdinov']
   spec.email = ['marat@khusnetdinov.ru']
 
-  spec.summary = 'Summary'
-  spec.description = 'Description'
+  spec.summary = 'Your request tracking tool for rails applications'
+  spec.description = 'ActiveEndpoint is middleware for Rails applications that collects and analyses requests and responses per request for endpoint. It works with minimal impact on application\'s response time.'
   spec.homepage = 'https://github.com/khusnetdinov/active_endpoint'
   spec.license = 'MIT'
 
