@@ -10,7 +10,7 @@ gemspec
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
-gem 'activesupport', '~> 4.0.0'
+gem 'activesupport', '~> 4.1.11'
 gem 'rack', '~> 1.0'
 gem 'redis-activesupport'
 
