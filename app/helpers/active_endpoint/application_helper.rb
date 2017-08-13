@@ -5,7 +5,6 @@ module ActiveEndpoint
       :cache_prefix,
       :constraint_limit,
       :constraint_period,
-      :favicon,
       :logger,
       :log_probe_info,
       :log_debug_info,
