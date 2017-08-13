@@ -118,16 +118,6 @@ end
 
 `blacklist.add(scope: "admin")` - Ignore all controllers and actions for `admin` namespace or scope.
 
-### Favicon
-
-`endpoint.favicon = custom_name.ico` - Use this if you have not `favicon.ico` name. Requires for ignoring request. Example:
-
-```ruby
-ActiveEndpoint.configure do |endpoint|
-  endpoint.favicon = '/custom.ico'
-end
-```
-
 ### Constraints
 
 You can specify the amount and period of request records to keep in database. Records which exceed these limits are automatically removed from database.

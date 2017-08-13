@@ -4,7 +4,6 @@ module ActiveEndpoint
       include RailsRoutable
 
       def initialize
-        @favicon = ActiveEndpoint.favicon
         @blacklist = ActiveEndpoint.blacklist
         @cache_store = ActiveEndpoint::Routes::Cache::Store.new
       end
@@ -37,7 +36,7 @@ module ActiveEndpoint
       private
 
       def favicon?(request)
-        (request.path == '/favicon.ico') || (request.path == @favicon)
+        request.path == '/favicon.ico'
       end
 
       def engine?(request)

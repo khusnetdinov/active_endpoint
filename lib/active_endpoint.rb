@@ -38,8 +38,6 @@ module ActiveEndpoint
   define_setting :constraint_period, 10.minutes
   define_setting :constraints, ActiveEndpoint::Routes::Constraints.new
 
-  define_setting :favicon, '/favicon.ico'
-
   define_setting :logger, ActiveEndpoint::Logger
 
   define_setting :log_probe_info, false
