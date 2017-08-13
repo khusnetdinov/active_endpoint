@@ -1,20 +1,28 @@
 # ActiveEndpoint [![Build Status](https://travis-ci.org/khusnetdinov/active_endpoint.svg?branch=master)](https://travis-ci.org/khusnetdinov/active_endpoint)
-## Attention! Gem in active development and is prepared for first releaze!
 
-## You tracking request tool for rails applications
+## Your request tracking tool for rails applications
+
+## Attention! Gem in under active development and is preparing for first release!
 
 ![img](http://res.cloudinary.com/dtoqqxqjv/image/upload/c_scale,w_346/v1501331806/github/active_probe.jpg)
 
 
 ## Usage
 
-ActiveEndpoint is middleware for Rails application that collects and analizes request and response per request for route endpoint. It works with minimum affecting to application response time.
+ActiveEndpoint is middleware for Rails applications that collects and analyses requests and responses per request for endpoint. It works with minimal impact on application's response time.
 
-It use `ActiveSupport::Notifications` and `Cache Storage` for reduction as possible affecting to application request / response.
+This gem uses `ActiveSupport::Notifications` and `Cache Storage` to reduce possible impact on application request / response processing time.
 
-Probes were taken from request are stored in database for tracking information. For preventing problems there are possibility to constraint time and period for taking request probes and create blacklist for endpoints in data storage and.
+## Features
 
-Information about endpoint probes that stores in data base:
+ - Metrics are stored in database for further tracking and analysis.
+ - History rotation with configurable limits of records amount and age.
+ - Routes filter (blacklist).
+ - Probes tagging by processing time.
+
+## Metrics
+
+These endpoint metrics are stored in DB:
 
    - `:uuid` - uniq probe identifier
    - `:endpoint` - requested endpoint
@@ -31,15 +39,15 @@ Information about endpoint probes that stores in data base:
    - `:response` - Base64 encoded html response
    - `:body` - Base64 encoded request body
 
-Information for additional inspecting requets that only are logging from Rack:
+Additional information is taken from Rack log:
 
 `:base_url, :content_charset, :content_length, :content_type, :fullpath, :http_version, :http_connection, :http_accept_encoding, :http_accept_language, :media_type, :media_type_params, :method, :path_info, :pattern, :port, :protocol, :server_name, :ssl`.
 
-If ActiveEndpoint get request what not recognizible by rails router it stores as `unregistred` endpoint.
+Requests which are not recognized by rails router are stored as `unregistred`.
 
 ## Requirements
 
-    redis - as cache storage
+ - `redis` as cache storage
 
 Be sure that you have all requrements installed on you machine.
 
@@ -63,17 +71,18 @@ Setup project for using gem:
 
     $ rails generate active_endpoint:install
 
-Migrate data base for models:
+Migrate database for models:
 
-    $ rake[rails] db:migrate
+    $ rake db:migrate  # Rails <=4
+    $ rails db:migrate # Rails >=5
 
-Now project have all files and settings that allow you to use gem.
+Now project has all files and settings that allow you to use gem.
 
 ## Configuration
 
-### Blacklist probing endpoints
+### Endpoints filter (blacklist)
 
-By default ActiveEndpoint set Rails application routes as `whitelist` routes, if you want to reduce endpoints for analizing use `blackilist` configuration, as shown below:
+By default ActiveEndpoint treats all routes as `whitelist` routes. To filter some endpoints you can use `blackilist` configuration, as shown below:
 
 ```ruby
 ActiveEndpoint.configure do |endpoint|
@@ -101,13 +110,13 @@ end
 
 `blacklist.add(resources: "users")` - Ignore all actions for `UsersController`.
 
-`baccklist.add(resoirces: ["users", "managers"])` - Ignore all actions for `UsersController` and `ManagersController`.
+`blacklist.add(resources: ["users", "managers"])` - Ignore all actions in `UsersController` and `ManagersController`.
 
-`blacklist.add(resoirces: "users", actions: ["show"])` - Ignore only `show` action for `UsersController`.
+`blacklist.add(resources: "users", actions: ["show"])` - Ignore only `show` action in `UsersController`.
 
 #### Ignore namespace or scope
 
-`blacklist.add(scope: "admin")` - Ignore all controller and actions for `admin` namespace or scope.
+`blacklist.add(scope: "admin")` - Ignore all controllers and actions for `admin` namespace or scope.
 
 ### Favicon
 
@@ -119,12 +128,10 @@ ActiveEndpoint.configure do |endpoint|
 end
 ```
 
-### Constraints Time and Request limit for endpoint
+### Constraints
 
-By default ActiveEndpoint takes default settings for period and amount requests for limitation probes for given endpoints.
-Additional you can specify how much probes you want to keep in database and how much probes you can store for endpoint in database per period.
-After expiration storage constraints expired probes automaticaly are removed from data base. And you don't need care about it.
-Also you can redefine them on constraining endpoint, see example below:
+You can specify the amount and period of request records to keep in database. Records which exceed these limits are automatically removed from database.
+See example below:
 
  ```ruby
 ActiveEndpoint.configure do |endpoint|
@@ -134,7 +141,7 @@ ActiveEndpoint.configure do |endpoint|
 
   endpoint.constraints.configure  do |constraints|
     # Constraint endpoint "welcome#index" with 1 minute period and default limit
-    # and configure data base constraints for saving 1000 probes per 1 week.
+    # and configure database constraints to keep 1000 probes per 1 week.
     constraints.add(endpoint: "welcome#index",
       rule: { 1.minute },
       storage: { limit: 1000, period: 1.week })
@@ -144,30 +151,29 @@ ActiveEndpoint.configure do |endpoint|
   end
 end
 ```
-Warning!: For defining constraints you need at least define one of limit or period.
+NOTE: To define a constraint you should define at least one limit or period.
 
 ### Storage settings
 
-ActiveEndpoint create two models in you rails application are `Probe` and STI child `UnregistredProbe`.
-For preventing problems with database probes are removes after user defined period. Also you can limit storage probes in database.
-Here you can see default settings for all constraints. For preventing removes actual probes define period that you want keep.
-See example below:
+ActiveEndpoint creates two models in you rails application: `Probe` and it's child `UnregistredProbe`.
+To prevent problems with database probes are removed when user defines custom period. Also you can limit storage probes in database.
+It is recommended to define own storage default to prevent unwanted probes deletion. See example below:
 
 ```ruby
 ActiveEndpoint.configure do |endpoint|
-  # Define default limit for maximum amount storage in database for endpoint.
+  # Define default limit for maximum probes amount
   endpoint.storage_limit = 1000
 
-  # Define default period that models are kept in database. After this period they are destroyd. 
-  endpoint.storage_period
+  # Define default period to keep probes in database.
+  endpoint.storage_period = 1.week
 
-  # Define amount periods (constraint periods) that endpoints are kept in database.
+  # Define amount of periods (constraint periods) that endpoints are kept in database.
   endpoint.storage_keep_periods = 2
 end
 ```
 
 ### Tagging probes
-For analizing probes you can define tags for deviding probes in groups by duration of probe. Time is defined in milliseconds. See example:
+You can group probes by tags automatically assigned according to request processing time (ms). See example below:
 
 ```ruby
 ActiveEndpoint.configure do |endpoint|
@@ -191,11 +197,12 @@ end
 
 #### Tagged model scopes
 
-Defined tags also usefull for scopes queries:
+Defined tags are also usefull for scopes queries:
 
 ```ruby
 ActiveEndpoint::Probe.tagged_as(:need_optimization)
-#=> Returns all probes with truthy conditions { greater_than_or_equal_to: 1000 }
+#=> Returns all probes having corresponding tag and thus matching the condition
+#   { greater_than_or_equal_to: 1000 }
 ```
 
 #### Instance methods
@@ -204,7 +211,7 @@ Check tag on model:
 
 ```ruby
 ActiveEndpoint::Probe.last.tag
-#=> Returns :need_optmization
+#=> Returns probe's tag
 ```
 ### Logging
 
@@ -214,9 +221,9 @@ Logger settings:
 ActiveEndpoint.configure do |endpoint|
   # Logger
   define_setting :logger, ActiveEndpoint::Logger
-  # Set true if you want log additional probe inf
+  # Set to true if you want to log probe's additional information
   define_setting :log_probe_info, false
-  # Set true for debugging, recomend for development
+  # Set to true for debugging, recomended for development
   define_setting :log_debug_info, false
 end
 ```
@@ -233,4 +240,4 @@ ActiveEndpoint offer rails engine for managing probes. Mount it:
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+This gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
