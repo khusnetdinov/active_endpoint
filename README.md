@@ -1,8 +1,8 @@
-# ActiveEndpoint [![Build Status](https://travis-ci.org/khusnetdinov/active_endpoint.svg?branch=master)](https://travis-ci.org/khusnetdinov/active_endpoint)
+# ActiveEndpoint [![Build Status](https://travis-ci.org/khusnetdinov/active_endpoint.svg?branch=master)](https://travis-ci.org/khusnetdinov/active_endpoint) [![Gem Version](https://badge.fury.io/rb/active_endpoint.svg)](https://badge.fury.io/rb/active_endpoint)
 
 ## Your request tracking tool for rails applications
 
-## Attention! Gem in under active development and is preparing for first release!
+## Attention! Gem in under active test and is preparing for first release !
 
 ![img](http://res.cloudinary.com/dtoqqxqjv/image/upload/c_scale,w_346/v1501331806/github/active_probe.jpg)
 
