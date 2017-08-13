@@ -1,16 +1,11 @@
 module RailsRoutable
-  ACTION_KEYS = [:controller, :action].freeze
+  ACTION_KEYS = [
+    :controller,
+    :action
+  ].freeze
 
   def rails_action?(request)
     rails_action(request).present?
-  end
-
-  def rails_route_pattern(request)
-    rails_routes.router.recognize(request) do |route|
-      return route.path.spec.to_s
-    end
-  rescue ActionController::RoutingError
-    nil
   end
 
   def rails_request_params(request)
@@ -36,6 +31,14 @@ module RailsRoutable
 
   def rails_action(request)
     rails_routes.recognize_path(request.path, method: request.method)
+  rescue ActionController::RoutingError
+    nil
+  end
+
+  def rails_route_pattern(request)
+    rails_routes.router.recognize(request) do |route|
+      return route.path.spec.to_s
+    end
   rescue ActionController::RoutingError
     nil
   end

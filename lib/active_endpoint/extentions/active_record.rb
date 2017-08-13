@@ -10,7 +10,7 @@ module ActiveEndpoint
       }.freeze
 
       def tagged_as(tag, tags = ActiveEndpoint.tags.definition)
-        return [] if tags.keys.exclude?(tag)
+        return [] unless tags.keys.include?(tag)
 
         time_operators = tags[tag]
         last_operator_index = time_operators.keys.length - 1

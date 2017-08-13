@@ -1,48 +1,40 @@
 module Optionable
-  private
-
-  def parse(options)
-    options.inject({}) do |hash, _option|
-      hash[options.first] = options.last
-    end
-  end
-
-  def endpoint(options)
+  def fetch_endpoint(options)
     return nil unless options
     options[:endpoint]
   end
 
-  def actions(options)
+  def fetch_actions(options)
     return nil unless options
     options[:actions]
   end
 
-  def resources(options)
+  def fetch_resources(options)
     return nil unless options
     options[:resources]
   end
 
-  def scope(options)
+  def fetch_scope(options)
     return nil unless options
     options[:scope]
   end
 
-  def limit(options)
+  def fetch_limit(options)
     return nil unless options
     options[:limit]
   end
 
-  def period(options)
+  def fetch_period(options)
     return nil unless options
     options[:period]
   end
 
-  def storage(options)
+  def fetch_storage(options)
     return nil unless options
     options[:storage]
   end
 
-  def rule(options)
+  def fetch_rule(options)
     return nil unless options
     options[:rule]
   end

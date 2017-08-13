@@ -6,11 +6,14 @@ require 'active_support/rails'
 require 'active_support/core_ext/module/delegation'
 
 require 'active_endpoint/concerns/configurable'
+require 'active_endpoint/concerns/constraintable'
 require 'active_endpoint/concerns/optionable'
 require 'active_endpoint/concerns/rails_routable'
 require 'active_endpoint/extentions/active_record'
+require 'active_endpoint/routes/momento'
 require 'active_endpoint/routes/blacklist'
 require 'active_endpoint/routes/constraints'
+require 'active_endpoint/routes/constraint_rule'
 require 'active_endpoint/routes/matcher'
 require 'active_endpoint/routes/cache/proxy/redis_store_proxy'
 require 'active_endpoint/routes/cache/proxy'
@@ -32,7 +35,7 @@ module ActiveEndpoint
   define_setting :cache_prefix, 'active_endpoint'
 
   define_setting :constraint_limit, 10
-  define_setting :constraint_period, 2.minutes
+  define_setting :constraint_period, 10.minutes
   define_setting :constraints, ActiveEndpoint::Routes::Constraints.new
 
   define_setting :favicon, '/favicon.ico'

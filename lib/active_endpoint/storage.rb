@@ -71,7 +71,7 @@ module ActiveEndpoint
       def handle_creation(probe)
         probe.save
       rescue => error
-        ActiveEmdpoint.logger.error(self.class, error)
+        ActiveEndpoint.logger.error('ActiveEndpoint::Probe', error)
       end
 
       def clean!(endpoint, period)
@@ -91,8 +91,8 @@ module ActiveEndpoint
       store_params, logging_params = probe_params(id, payload[:probe])
 
       if ActiveEndpoint.log_debug_info
-        ActiveEndpoint.logger.info('ActiveEndpoint::Storage', store_params.inspect)
-        ActiveEndpoint.logger.info('ActiveEndpoint::Storage', logging_params.inspect)
+        ActiveEndpoint.logger.debug('ActiveEndpoint::Storage', store_params.inspect)
+        ActiveEndpoint.logger.debug('ActiveEndpoint::Storage', logging_params.inspect)
       end
 
       register!(store_params)
