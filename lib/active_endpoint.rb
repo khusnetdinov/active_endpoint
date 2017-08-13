@@ -35,7 +35,7 @@ module ActiveEndpoint
   define_setting :cache_prefix, 'active_endpoint'
 
   define_setting :constraint_limit, 10
-  define_setting :constraint_period, 2.minutes
+  define_setting :constraint_period, 10.minutes
   define_setting :constraints, ActiveEndpoint::Routes::Constraints.new
 
   define_setting :favicon, '/favicon.ico'

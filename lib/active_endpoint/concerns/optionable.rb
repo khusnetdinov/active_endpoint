@@ -1,6 +1,4 @@
 module Optionable
-  private
-
   def fetch_endpoint(options)
     return nil unless options
     options[:endpoint]

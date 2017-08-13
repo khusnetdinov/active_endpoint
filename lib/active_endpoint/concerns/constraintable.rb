@@ -7,10 +7,12 @@ module Constraintable
   end
 
   def rule_constraints(options)
+    rule_options = fetch_rule(options)
+
     defined_rule_constraints = {
-      limit: fetch_limit(options),
-      period: fetch_period(options)
-    }.compact
+      limit: fetch_limit(rule_options),
+      period: fetch_period(rule_options)
+    }.reject { |_key, value| value.nil? }
 
     default_rule_constraints.merge(defined_rule_constraints)
   end
@@ -21,7 +23,7 @@ module Constraintable
     defined_storage_constraints = {
       limit: fetch_limit(storage_options),
       period: fetch_period(storage_options)
-    }.compact
+    }.reject { |_key, value| value.nil? }
 
     default_storage_constraints.merge(defined_storage_constraints)
   end

@@ -24,10 +24,6 @@ module ActiveEndpoint
         ]
       end
 
-      def exclude?(request)
-        !include?(request)
-      end
-
       def add(**options, &block)
 
         yield(options) if block_given?
