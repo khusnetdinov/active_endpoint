@@ -25,4 +25,14 @@ Gem::Specification.new do |spec|
   spec.bindir = 'exe'
   spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
+  spec.test_files = Dir.glob('spec/**/*')
+
+  spec.required_ruby_version = '>= 2.0.0'
+
+  spec.add_dependency 'rack'
+
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'activesupport', '>= 3.0.0'
+  spec.add_development_dependency 'actionpack', '>= 3.0.0'
+  spec.add_development_dependency 'redis-activesupport'
 end
