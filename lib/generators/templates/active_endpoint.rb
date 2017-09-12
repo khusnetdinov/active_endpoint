@@ -34,7 +34,4 @@ ActiveEndpoint.configure do |endpoint|
   end
 
   define_setting :logger, ActiveEndpoint::Logger
-
-  define_setting :log_probe_info, false
-  define_setting :log_debug_info, false
 end

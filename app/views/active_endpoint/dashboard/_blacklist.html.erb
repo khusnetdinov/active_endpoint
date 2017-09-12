@@ -9,7 +9,7 @@
               <tr><th>Endpoints</th></tr>
             </thead>
             <tbody>
-              <%- endpoints.each do |endpoint| %>
+              <%-  ActiveEndpoint.blacklist.endpoints.each do |endpoint| %>
                 <tr><td><%= endpoint %></td></tr>
               <% end %>
             </tbody>
@@ -21,7 +21,7 @@
             <tr><th>Resources</th></tr>
             </thead>
             <tbody>
-            <%- resources.each do |resource| %>
+            <%-  ActiveEndpoint.blacklist.resources.each do |resource| %>
                 <tr><td><%= resource %></td></tr>
             <% end %>
             </tbody>
@@ -33,7 +33,7 @@
             <tr><th>Actions</th></tr>
             </thead>
             <tbody>
-            <%- actions.each do |actions| %>
+            <%-  ActiveEndpoint.blacklist.actions.each do |actions| %>
                 <tr><td><%= actions %></td></tr>
             <% end %>
             </tbody>
@@ -45,7 +45,7 @@
             <tr><th>Scope</th></tr>
             </thead>
             <tbody>
-            <%- scopes.each do |scopes| %>
+            <%-  ActiveEndpoint.blacklist.scopes.each do |scopes| %>
                 <tr><td><%= scopes %></td></tr>
             <% end %>
             </tbody>

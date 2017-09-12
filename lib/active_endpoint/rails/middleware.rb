@@ -9,6 +9,8 @@ module ActiveEndpoint
         dup._call(env, ActiveEndpoint::Proxy.new)
       end
 
+      private
+
       def _call(env, proxy)
         proxy.track(env) { @app.call(env) }
       end

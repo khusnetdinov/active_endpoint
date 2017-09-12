@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe RailsRoutable do
   let(:request) { Hash.new }
-  let(:action) { {controller: "web/welcome", action: "index"} }
+  let(:action) { {controller: 'web/welcome', action: 'index'} }
 
   before do
     module Test
@@ -24,11 +24,6 @@ RSpec.describe RailsRoutable do
   describe '#rails_endpoint' do
     subject { Test.rails_endpoint(request) }
     it { is_expected.to eql(action) }
-  end
-
-  describe '#rails_endpoint_name' do
-    subject { Test.rails_endpoint_name(request) }
-    it { is_expected.to eql('#') }
   end
 
   describe '#rails_action' do

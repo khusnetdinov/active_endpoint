@@ -47,7 +47,7 @@ module ActiveEndpoint
       end
 
       def present_resource?(request)
-        reduce_state(@resources, request)
+        check_present(@resources, request)
       end
 
       def present_action?(request)
@@ -55,7 +55,7 @@ module ActiveEndpoint
       end
 
       def present_scope?(request)
-        reduce_state(@scopes, request)
+        check_present(@scopes, request)
       end
 
       def apply(scope, collection)

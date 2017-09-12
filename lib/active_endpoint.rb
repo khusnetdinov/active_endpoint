@@ -5,8 +5,8 @@ require 'active_support/time'
 require 'active_support/rails'
 require 'active_support/core_ext/module/delegation'
 
-require 'active_endpoint/concerns/coercoable'
-
+require 'active_endpoint/extentions/active_support'
+require 'active_endpoint/concerns/settingable'
 require 'active_endpoint/concerns/configurable'
 require 'active_endpoint/concerns/constraintable'
 require 'active_endpoint/concerns/optionable'
@@ -29,7 +29,7 @@ require 'active_endpoint/tags'
 require 'active_endpoint/version'
 
 module ActiveEndpoint
-  extend Coercoable
+  extend Settingable
   extend Configurable
 
   define_setting :blacklist, ActiveEndpoint::Routes::Blacklist.new
@@ -42,9 +42,6 @@ module ActiveEndpoint
   define_setting :constraints, ActiveEndpoint::Routes::Constraints.new
 
   define_setting :logger, ActiveEndpoint::Logger
-
-  define_setting :log_probe_info, false
-  define_setting :log_debug_info, false
 
   define_setting :storage_limit, 1000
   define_setting :storage_period, 1.day

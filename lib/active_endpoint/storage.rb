@@ -37,27 +37,10 @@ module ActiveEndpoint
     ].freeze
 
     class << self
+      private
+
       def notifier
         ActiveSupport::Notifications
-      end
-
-      def probe_params(transaction_id, probe)
-        request = probe.delete(:request)
-        request_body = request.delete(:body)
-
-        response = probe.delete(:response)
-        response_body = response.present? ? response[:body] : nil
-
-        params = {
-          uuid: transaction_id,
-          response: response_body ? Base64.encode64(response_body) : '',
-          started_at: probe[:created_at],
-          finished_at: probe[:finished_at],
-          duration: probe[:finished_at] ? (probe[:finished_at] - probe[:created_at]).second.round(3) : 0,
-          body: request_body.is_a?(Puma::NullIO) ? '' : request_body
-        }.merge(request)
-
-        [params.dup.except(*LOGGING_FIELDS), params.dup.except(*STORING_FIELDS)]
       end
 
       def store!(params)
@@ -68,14 +51,33 @@ module ActiveEndpoint
         handle_creation(ActiveEndpoint::UnregistredProbe.new(params.merge(endpoint: :unregistred)))
       end
 
+      def clean!(endpoint, period)
+        ActiveEndpoint::Probe.registred.probe(endpoint).taken_before(period).destroy_all
+      end
+
       def handle_creation(probe)
         probe.save
       rescue => error
         ActiveEndpoint.logger.error('ActiveEndpoint::Probe', error)
       end
 
-      def clean!(endpoint, period)
-        ActiveEndpoint::Probe.registred.probe(endpoint).taken_before(period).destroy_all
+      def probe_params(transaction_id, probe)
+        request = probe.delete(:request)
+        request_body = request.delete(:body)
+
+        response = probe.delete(:response)
+        response_body = response.present? ? response[:body] : nil
+
+        params = {
+            uuid: transaction_id,
+            response: response_body ? Base64.encode64(response_body) : '',
+            started_at: probe[:created_at],
+            finished_at: probe[:finished_at],
+            duration: probe[:finished_at] ? (probe[:finished_at] - probe[:created_at]).second.round(3) : 0,
+            body: request_body.is_a?(Puma::NullIO) ? '' : request_body
+        }.merge(request)
+
+        [params.dup.except(*LOGGING_FIELDS), params.dup.except(*STORING_FIELDS)]
       end
     end
 
@@ -90,10 +92,8 @@ module ActiveEndpoint
     notifier.subscribe('active_endpoint.unregistred_probe') do |_name, _start, _ending, id, payload|
       store_params, logging_params = probe_params(id, payload[:probe])
 
-      if ActiveEndpoint.log_debug_info
-        ActiveEndpoint.logger.debug('ActiveEndpoint::Storage', store_params.inspect)
-        ActiveEndpoint.logger.debug('ActiveEndpoint::Storage', logging_params.inspect)
-      end
+      ActiveEndpoint.logger.debug('ActiveEndpoint::Storage', store_params.inspect)
+      ActiveEndpoint.logger.debug('ActiveEndpoint::Storage', logging_params.inspect)
 
       register!(store_params)
     end
@@ -102,9 +102,7 @@ module ActiveEndpoint
       key = payload[:expired][:key].split(':').last
       period = DateTime.now - (payload[:expired][:period] * ActiveEndpoint.storage_keep_periods).seconds
 
-      if ActiveEndpoint.log_debug_info
-        ActiveEndpoint.logger.info('ActiveEndpoint::Storage', { key: key, period: period, uuid: id }.inspect)
-      end
+      ActiveEndpoint.logger.info('ActiveEndpoint::Storage', { key: key, period: period, uuid: id }.inspect)
 
       clean!(key, period)
     end
