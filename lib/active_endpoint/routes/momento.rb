@@ -9,6 +9,7 @@ module ActiveEndpoint
       attr_reader :endpoints, :resources, :actions, :scopes
 
       def initialize(structure_class)
+        @structure = structure_class
         @endpoints = structure_class.new
         @resources = structure_class.new
         @actions = structure_class.new
@@ -16,16 +17,15 @@ module ActiveEndpoint
       end
 
       def include?(request)
-        any_presented? [
+        [
           present_endpoint?(request),
           present_resource?(request),
           present_action?(request),
           present_scope?(request)
-        ]
+        ].any?
       end
 
       def add(**options, &block)
-
         yield(options) if block_given?
 
         add_endpoint(options) if fetch_endpoint(options).present?
@@ -67,14 +67,9 @@ module ActiveEndpoint
         raise NotImplementedError
       end
 
-      def any_presented?(chain)
-        chain.reduce(false) { |state, responder_state| state || responder_state }
-      end
-
-      def reduce_state(collection, request)
-        collection.reduce(false) do |state, subject|
-          state || request[:endpoint].present? && request[:endpoint].start_with?(subject)
-        end
+      def check_present(collection, request)
+        endpoint = request[:endpoint]
+        collection.map { |subject| endpoint.present? && endpoint.start_with?(subject) }.any?
       end
     end
   end

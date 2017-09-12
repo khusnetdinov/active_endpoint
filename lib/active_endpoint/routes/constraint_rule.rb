@@ -6,7 +6,7 @@ module ActiveEndpoint
 
       def initialize(request)
         @request = request
-        @rules = ActiveEndpoint.constraints
+        @constraints = ActiveEndpoint.constraints
       end
 
       def rule
@@ -18,10 +18,10 @@ module ActiveEndpoint
       private
 
       def prefix
-        return :endpoints if @rules.present_endpoint?(@request)
-        return :resources if @rules.present_resource?(@request)
-        return :actions if @rules.present_action?(@request)
-        return :scopes if @rules.present_scope?(@request)
+        return :endpoints if @constraints.send(:present_endpoint?, @request)
+        return :resources if @constraints.send(:present_resource?, @request)
+        return :actions if @constraints.send(:present_action?, @request)
+        return :scopes if @constraints.send(:present_scope?, @request)
         :defaults
       end
 
@@ -29,7 +29,7 @@ module ActiveEndpoint
         if prefix == :defaults
           default_constraints
         else
-          constraints = @rules.public_send(prefix)[@request[:endpoint]]
+          constraints = @constraints.public_send(prefix)[@request[:endpoint]]
           constraints.present? ? constraints : default_constraints
         end
       end

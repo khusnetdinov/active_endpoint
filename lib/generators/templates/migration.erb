@@ -1,11 +1,11 @@
 class CreateActiveEndpointProbes < ActiveRecord::Migration<%= migration_version %>
   def change
     create_table :active_endpoint_probes do |t|
-      t.string :type, default: '', index: true
+      t.string :type, default: ''
 
-      t.string :uuid, null: false, index: true
+      t.string :uuid, null: false
       t.string :endpoint, null: false, index: true
-      t.string :path, null: false, index: true
+      t.string :path, null: false
 
       t.string :query_string, null: false
       t.string :request_method, null: false
@@ -14,10 +14,10 @@ class CreateActiveEndpointProbes < ActiveRecord::Migration<%= migration_version 
 
       t.boolean :xhr
 
-      t.datetime :started_at, null: false, index: true
+      t.datetime :started_at, null: false
       t.datetime :finished_at
 
-      t.float :duration, nill: false, index: true
+      t.float :duration, nill: false
 
       t.json :params, default: '{}'
 

@@ -6,8 +6,6 @@ module ActiveEndpoint
       :constraint_limit,
       :constraint_period,
       :logger,
-      :log_probe_info,
-      :log_debug_info,
       :storage_limit,
       :storage_period,
       :storage_keep_periods
@@ -40,22 +38,6 @@ module ActiveEndpoint
 
     def label_for(tag)
       TAGS_COLORS[ActiveEndpoint.tags.definition.keys.index(tag.to_sym)]
-    end
-
-    def endpoints
-      ActiveEndpoint.blacklist.endpoints
-    end
-
-    def resources
-      ActiveEndpoint.blacklist.resources
-    end
-
-    def actions
-      ActiveEndpoint.blacklist.actions
-    end
-
-    def scopes
-      ActiveEndpoint.blacklist.scopes
     end
 
     def endpoints_constraints

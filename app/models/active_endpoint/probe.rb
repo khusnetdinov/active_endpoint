@@ -9,19 +9,11 @@ module ActiveEndpoint
     scope :registred, ->() { where.not(endpoint: :unregistred) }
     scope :probe, ->(endpoint) { where(endpoint: endpoint) }
     scope :taken_before, ->(period) { where('created_at < ?', period) }
-    scope :group_by_endpoint, ->() {
-      execute_statement("
-        select count(*) as amount, endpoint, request_method as method, avg(duration) as duration
-        from active_endpoint_probes group by endpoint, request_method
-        having endpoint != 'unregistred'
-      ")
-    }
 
     def tag
-      definitions = ActiveEndpoint.tags.definition
       methods = ActiveEndpoint::Extentions::ActiveRecord::METHODS
 
-      definitions.each do |tag_name, operators|
+      ActiveEndpoint.tags.definition.each do |tag_name, operators|
         last_operation_index = operators.length - 1
 
         exec_operator = ''
@@ -40,8 +32,15 @@ module ActiveEndpoint
       type == 'ActiveEndpoint::UnregistredProbe'
     end
 
-    def self.execute_statement(sql)
-      results = ActiveRecord::Base.connection.execute(sql)
+    def self.group_by_endpoint
+      sql = <<-sql
+        select count(*) as amount, endpoint, request_method as method, avg(duration) as duration
+        from active_endpoint_probes group by endpoint, request_method
+        having endpoint != 'unregistred'
+      sql
+
+      results = ActiveRecord::Base.find_by_sql(sql)
+
       if results.present?
         return results.map(&:deep_symbolize_keys)
       else

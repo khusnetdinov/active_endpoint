@@ -3,14 +3,6 @@ require 'spec_helper'
 RSpec.describe Configurable do
   module Test
     extend Configurable
-
-    define_setting :setting, :default
-  end
-
-  subject { Test.setting }
-
-  describe '#define_setting' do
-    it { is_expected.to eql(:default) }
   end
 
   describe'#configure' do
@@ -20,6 +12,8 @@ RSpec.describe Configurable do
       end
     end
 
-    it { is_expected.to eql(:not_default)}
+    subject { Test.setting }
+
+    it { is_expected.to eql(:not_default) }
   end
 end

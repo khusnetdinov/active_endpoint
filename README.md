@@ -203,20 +203,6 @@ Check tag on model:
 ActiveEndpoint::Probe.last.tag
 #=> Returns probe's tag
 ```
-### Logging
-
-Logger settings:
-
-```ruby
-ActiveEndpoint.configure do |endpoint|
-  # Logger
-  define_setting :logger, ActiveEndpoint::Logger
-  # Set to true if you want to log probe's additional information
-  define_setting :log_probe_info, false
-  # Set to true for debugging, recomended for development
-  define_setting :log_debug_info, false
-end
-```
 
 ### Web UI
 

@@ -34,15 +34,17 @@ module ActiveEndpoint
       }
     end
 
+    private
+
     def method
       request_method.downcase.to_sym
     end
 
     def endpoint
-      rails_endpoint_name(rails_endpoint(self))
+      action = rails_endpoint(self)
+      return unless action
+      "#{action[:controller]}##{action[:action]}"
     end
-
-    private
 
     def http_accept_encoding
       get_header('HTTP_ACCEPT_ENCODING')

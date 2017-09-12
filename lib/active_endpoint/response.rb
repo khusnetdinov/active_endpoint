@@ -10,6 +10,8 @@ module ActiveEndpoint
       }
     end
 
+    private
+
     def body
       @response.join if @response.respond_to? :join
     end

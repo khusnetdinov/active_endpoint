@@ -16,12 +16,14 @@ module ActiveEndpoint
         end
       end
 
+      private
+
       def present_endpoint?(request)
         @endpoints.keys.include?(request[:endpoint])
       end
 
       def present_resource?(request)
-        reduce_state(@resources.keys, request)
+        check_present(@resources.keys, request)
       end
 
       def present_action?(request)
@@ -29,10 +31,8 @@ module ActiveEndpoint
       end
 
       def present_scope?(request)
-        reduce_state(@scopes.keys, request)
+        check_present(@scopes.keys, request)
       end
-
-      private
 
       def add_endpoint(options)
         @endpoints[fetch_endpoint(options)] = constraints(options)

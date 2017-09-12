@@ -47,11 +47,11 @@ module ActiveEndpoint
           limit = cache.nil? ? cache : cache.to_i
           period = expires_in(key)
 
-          if ActiveEndpoint.log_debug_info
-            @logger.debug('ActiveEndpoint::Cache::Store Prefix', prefix)
-            @logger.debug('ActiveEndpoint::Cache::Store Limit', limit)
-            @logger.debug('ActiveEndpoint::Cache::Store Period', period)
-          end
+          # if ActiveEndpoint.log_debug_info
+          #   @logger.debug('ActiveEndpoint::Cache::Store Prefix', prefix)
+          #   @logger.debug('ActiveEndpoint::Cache::Store Limit', limit)
+          #   @logger.debug('ActiveEndpoint::Cache::Store Period', period)
+          # end
 
           limited = limit.present? && limit.zero?
           expired = period.zero?

@@ -1,8 +1,5 @@
 module RailsRoutable
-  ACTION_KEYS = [
-    :controller,
-    :action
-  ].freeze
+  ACTION_KEYS = [:controller, :action].freeze
 
   def rails_action?(request)
     rails_action(request).present?
@@ -24,11 +21,6 @@ module RailsRoutable
     end
   end
 
-  def rails_endpoint_name(action)
-    return unless action
-    "#{action[:controller]}##{action[:action]}"
-  end
-
   def rails_action(request)
     rails_routes.recognize_path(request.path, method: request.method)
   rescue ActionController::RoutingError
@@ -42,6 +34,8 @@ module RailsRoutable
   rescue ActionController::RoutingError
     nil
   end
+
+  private
 
   def rails_routes
     ::Rails.application.routes
