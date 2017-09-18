@@ -3,9 +3,9 @@ module ActiveEndpoint
     module Cache
       module Proxy
         class RedisStoreProxy
-          def initialize
-            @prefix = ActiveEndpoint.cache_prefix
-            @store = ::Redis::Store.new
+          def initialize(cache_prefix = ActiveEndpoint.cache_prefix, store = ::Redis::Store.new)
+            @prefix = cache_prefix
+            @store = store
           end
 
           def read(unprefixed_key)

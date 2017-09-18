@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe ActiveEndpoint::Tags do
   describe '#add' do
-    let(:tag_name) { :tag_name  }
+    let(:tag_name) { :tag_name }
     let(:definition) { :definition }
     let(:tags) { ActiveEndpoint::Tags.new }
 

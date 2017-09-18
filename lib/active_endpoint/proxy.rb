@@ -1,17 +1,15 @@
 module ActiveEndpoint
   class Proxy
-    def initialize
+    def initialize(matcher = ActiveEndpoint::Routes::Matcher.new)
+      @matcher = matcher
       @created_at = Time.now
-      @matcher = ActiveEndpoint::Routes::Matcher.new
-      @logger = ActiveEndpoint.logger
-      @notifier = ActiveSupport::Notifications
     end
 
     def track(env, &block)
       request = ActiveEndpoint::Request.new(env)
 
-      @logger.debug('ActiveEndpoint::Blacklist', ActiveEndpoint.blacklist.inspect)
-      @logger.debug('ActiveEndpoint::Constraints', ActiveEndpoint.constraints.inspect)
+      ActiveEndpoint.logger.debug('ActiveEndpoint::Blacklist', ActiveEndpoint.blacklist.inspect)
+      ActiveEndpoint.logger.debug('ActiveEndpoint::Constraints', ActiveEndpoint.constraints.inspect)
 
       if @matcher.whitelisted?(request)
         track_begin(request)
@@ -46,7 +44,7 @@ module ActiveEndpoint
         response: @response
       }
 
-      @notifier.instrument('active_endpoint.tracked_probe', probe: probe) if @matcher.allow_account?(@request)
+      ActiveSupport::Notifications.instrument('active_endpoint.tracked_probe', probe: probe) if @matcher.allow_account?(@request)
     end
 
     def register(request)
@@ -56,7 +54,7 @@ module ActiveEndpoint
         request: request.probe
       }
 
-      @notifier.instrument('active_endpoint.unregistred_probe', probe: unregistred) if @matcher.allow_register?(request)
+      ActiveSupport::Notifications.instrument('active_endpoint.unregistred_probe', probe: unregistred) if @matcher.allow_register?(request)
     end
   end
 end

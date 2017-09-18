@@ -39,13 +39,17 @@ RSpec.describe Constraintable do
     context 'part of defaults' do
       context 'rule' do
         it 'constraints rule' do
-          expect(Test.rule_constraints({ rule: { limit: 300 }})).to eq({ limit: 300, period: constraint_period })
+          constraints = Test.rule_constraints(rule: { limit: 300 })
+          result = { limit: 300, period: constraint_period }
+          expect(constraints).to eq(result)
         end
       end
 
       context 'storage' do
         it 'constrainrts storage' do
-          expect(Test.storage_constraints({ storage: { period: 2.minutes }})).to eq({ limit: storage_limit, period: 2.minutes })
+          constraints = Test.storage_constraints(storage: { period: 2.minutes })
+          result = { limit: storage_limit, period: 2.minutes }
+          expect(constraints).to eq(result)
         end
       end
     end

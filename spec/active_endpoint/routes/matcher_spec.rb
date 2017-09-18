@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe ActiveEndpoint::Routes::Matcher do
   let(:request) { double('Request', probe: { endpoint: 'welcome#index' }) }
   let(:cache_store) { double('Cache::Store') }
-  let(:constraint_rule) { double('ConstraintRule', rule: Hash.new) }
+  let(:constraint_rule) { double('ConstraintRule', rule: {}) }
   let(:matcher) { described_class.new }
 
   before do
@@ -20,7 +20,7 @@ RSpec.describe ActiveEndpoint::Routes::Matcher do
   end
 
   describe '#blacklisted' do
-    let(:probe) { { endpoint: 'welcome#index' }}
+    let(:probe) { { endpoint: 'welcome#index' } }
     context 'ignored' do
       subject { matcher.blacklisted?(probe) }
       it { is_expected.to be_falsey }
