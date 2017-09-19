@@ -3,9 +3,9 @@ module ActiveEndpoint
     class Matcher
       include RailsRoutable
 
-      def initialize
-        @blacklist = ActiveEndpoint.blacklist
-        @cache_store = ActiveEndpoint::Routes::Cache::Store.new
+      def initialize(blacklist = ActiveEndpoint.blacklist, cache_store = ActiveEndpoint::Routes::Cache::Store.new)
+        @blacklist = blacklist
+        @cache_store = cache_store
       end
 
       def whitelisted?(request)

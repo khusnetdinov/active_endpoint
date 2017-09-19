@@ -1,17 +1,17 @@
 require 'spec_helper'
 
 RSpec.describe Optionable do
-  let(:empty_options) { Hash.new }
+  let(:empty_options) { {} }
 
-  [
-    :endpoint,
-    :actions,
-    :resources,
-    :scope,
-    :limit,
-    :period,
-    :storage,
-    :rule
+  %i[
+    endpoint
+    actions
+    resources
+    scope
+    limit
+    period
+    storage
+    rule
   ].each do |method|
     describe "#fetch_#{method}" do
       let(:object) { Object.new }

@@ -5,7 +5,7 @@ RSpec.describe Configurable do
     extend Configurable
   end
 
-  describe'#configure' do
+  describe '#configure' do
     before do
       Test.configure do |test|
         test.setting = :not_default

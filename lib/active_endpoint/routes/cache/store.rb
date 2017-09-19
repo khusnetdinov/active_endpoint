@@ -6,10 +6,8 @@ module ActiveEndpoint
         delegate :write, to: :@store
         delegate :expires_in, to: :@store
 
-        def initialize
-          @store = ActiveEndpoint::Routes::Cache::Proxy.build(ActiveEndpoint.cache_store_client)
-          @logger = ActiveEndpoint.logger
-          @notifier = ActiveSupport::Notifications
+        def initialize(cache_store_client = ActiveEndpoint.cache_store_client)
+          @store = ActiveEndpoint::Routes::Cache::Proxy.build(cache_store_client)
         end
 
         def allow?(rule)
@@ -34,7 +32,7 @@ module ActiveEndpoint
               period: period
             }
 
-            @notifier.instrument('active_endpoint.clean_expired', expired: expired)
+            ActiveSupport::Notifications.instrument('active_endpoint.clean_expired', expired: expired)
           end
         end
 
@@ -47,11 +45,9 @@ module ActiveEndpoint
           limit = cache.nil? ? cache : cache.to_i
           period = expires_in(key)
 
-          # if ActiveEndpoint.log_debug_info
-          #   @logger.debug('ActiveEndpoint::Cache::Store Prefix', prefix)
-          #   @logger.debug('ActiveEndpoint::Cache::Store Limit', limit)
-          #   @logger.debug('ActiveEndpoint::Cache::Store Period', period)
-          # end
+          ActiveEndpoint.logger.debug('ActiveEndpoint::Cache::Store Prefix', prefix)
+          ActiveEndpoint.logger.debug('ActiveEndpoint::Cache::Store Limit', limit)
+          ActiveEndpoint.logger.debug('ActiveEndpoint::Cache::Store Period', period)
 
           limited = limit.present? && limit.zero?
           expired = period.zero?

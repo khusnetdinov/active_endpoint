@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe RailsRoutable do
-  let(:request) { Hash.new }
-  let(:action) { {controller: 'web/welcome', action: 'index'} }
+  let(:request) { {} }
+  let(:action) { { controller: 'web/welcome', action: 'index' } }
 
   before do
     module Test

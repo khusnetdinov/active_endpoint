@@ -4,9 +4,9 @@ module ActiveEndpoint
       include Optionable
       include Constraintable
 
-      def initialize(request)
+      def initialize(request, constraints = ActiveEndpoint.constraints)
         @request = request
-        @constraints = ActiveEndpoint.constraints
+        @constraints = constraints
       end
 
       def rule
