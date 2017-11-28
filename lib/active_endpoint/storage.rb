@@ -84,7 +84,7 @@ module ActiveEndpoint
     notifier.subscribe('active_endpoint.tracked_probe') do |_name, _start, _ending, id, payload|
       store_params, logging_params = probe_params(id, payload[:probe])
 
-      ActiveEndpoint.logger.info('ActiveEndpoint::Storage', logging_params, ActiveEndpoint.log_probe_info)
+      ActiveEndpoint.logger.info('ActiveEndpoint::Storage', logging_params)
 
       store!(store_params)
     end
@@ -92,8 +92,8 @@ module ActiveEndpoint
     notifier.subscribe('active_endpoint.unregistred_probe') do |_name, _start, _ending, id, payload|
       store_params, logging_params = probe_params(id, payload[:probe])
 
-      ActiveEndpoint.logger.debug('ActiveEndpoint::Storage', store_params.inspect)
-      ActiveEndpoint.logger.debug('ActiveEndpoint::Storage', logging_params.inspect)
+      ActiveEndpoint.logger.debug('ActiveEndpoint::Storage', store_params)
+      ActiveEndpoint.logger.debug('ActiveEndpoint::Storage', logging_params)
 
       register!(store_params)
     end
@@ -102,7 +102,7 @@ module ActiveEndpoint
       key = payload[:expired][:key].split(':').last
       period = DateTime.now - (payload[:expired][:period] * ActiveEndpoint.storage_keep_periods).seconds
 
-      ActiveEndpoint.logger.info('ActiveEndpoint::Storage', { key: key, period: period, uuid: id }.inspect)
+      ActiveEndpoint.logger.info('ActiveEndpoint::Storage', { key: key, period: period, uuid: id })
 
       clean!(key, period)
     end

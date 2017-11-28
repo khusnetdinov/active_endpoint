@@ -8,8 +8,8 @@ module ActiveEndpoint
     def track(env, &block)
       request = ActiveEndpoint::Request.new(env)
 
-      ActiveEndpoint.logger.debug('ActiveEndpoint::Blacklist', ActiveEndpoint.blacklist.inspect)
-      ActiveEndpoint.logger.debug('ActiveEndpoint::Constraints', ActiveEndpoint.constraints.inspect)
+      ActiveEndpoint.logger.debug('ActiveEndpoint::Blacklist', ActiveEndpoint.blacklist)
+      ActiveEndpoint.logger.debug('ActiveEndpoint::Constraints', ActiveEndpoint.constraints)
 
       if @matcher.whitelisted?(request)
         track_begin(request)

@@ -3,7 +3,7 @@ module ActiveEndpoint
     isolate_namespace ActiveEndpoint
 
     initializer 'active_endpoint.assets.precompile' do |app|
-      app.config.assets.precompile += %w()
+      app.config.assets.precompile += %w[]
     end
 
     config.generators do |g|
