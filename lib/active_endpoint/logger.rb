@@ -1,8 +1,7 @@
 module ActiveEndpoint
   class Logger
     class << self
-      def info(caller, info, force = nil)
-        return if force.nil? || !force
+      def info(caller, info)
         logger.info(message(caller, info))
       end
 
