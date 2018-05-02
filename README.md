@@ -1,4 +1,4 @@
-# ActiveEndpoint [![Build Status](https://travis-ci.org/khusnetdinov/active_endpoint.svg?branch=master)](https://travis-ci.org/khusnetdinov/active_endpoint) [![Gem Version](https://badge.fury.io/rb/active_endpoint.svg)](https://badge.fury.io/rb/active_endpoint)
+# ActiveEndpoint [![Build Status](https://travis-ci.org/khusnetdinov/active_endpoint.svg?branch=master)](https://travis-ci.org/khusnetdinov/active_endpoint) [![Gem Version](https://badge.fury.io/rb/active_endpoint.svg)](https://badge.fury.io/rb/active_endpoint) [![Open Source Helpers](https://www.codetriage.com/khusnetdinov/active_endpoint/badges/users.svg)](https://www.codetriage.com/khusnetdinov/active_endpoint)
 
 ## Your request tracking tool for rails applications
 
